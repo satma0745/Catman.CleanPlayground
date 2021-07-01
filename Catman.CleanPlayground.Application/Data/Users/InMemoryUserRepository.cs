@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Data.Users
+namespace Catman.CleanPlayground.Application.Data.Users
 {
     using System.Collections.Generic;
     using System.Linq;

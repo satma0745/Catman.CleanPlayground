@@ -1,13 +1,13 @@
 namespace Catman.CleanPlayground.Presentation.Users
 {
     using System;
-    using Catman.CleanPlayground.Services.Users;
+    using Catman.CleanPlayground.Application.Services.Users;
 
-    internal class ConsoleUsersPresentation
+    internal class UsersPresentation
     {
-        private readonly UserService _users;
+        private readonly IUserService _users;
 
-        public ConsoleUsersPresentation(UserService userService)
+        public UsersPresentation(IUserService userService)
         {
             _users = userService;
         }

@@ -1,11 +1,11 @@
-namespace Catman.CleanPlayground.Services.Users
+namespace Catman.CleanPlayground.Application.Services.Users
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Catman.CleanPlayground.Data.Users;
+    using Catman.CleanPlayground.Application.Data.Users;
 
-    internal class UserService
+    internal class UserService : IUserService
     {
         private readonly InMemoryUserRepository _users;
 

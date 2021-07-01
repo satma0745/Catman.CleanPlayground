@@ -1,6 +1,6 @@
-namespace Catman.CleanPlayground.Data.Users
+namespace Catman.CleanPlayground.Application.Services.Users
 {
-    internal class UserEntity
+    public class UpdateUserModel
     {
         public byte Id { get; set; }
         

@@ -1,18 +1,23 @@
 ﻿namespace Catman.CleanPlayground
 {
-    using Catman.CleanPlayground.Data.Users;
+    using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
+    using Catman.CleanPlayground.Extensions.DependencyInjection;
     using Catman.CleanPlayground.Presentation.Users;
-    using Catman.CleanPlayground.Services.Users;
+    using Microsoft.Extensions.DependencyInjection;
 
     internal static class Program
     {
         private static void Main()
         {
-            var userRepository = new InMemoryUserRepository();
-            var userService = new UserService(userRepository);
-            var userPresentation = new ConsoleUsersPresentation(userService);
+            var serviceProvider = ConfigureServices().BuildServiceProvider();
             
-            userPresentation.RunInteraction();
+            var userPresentation = serviceProvider.GetService<UsersPresentation>();
+            userPresentation!.RunInteraction();
         }
+
+        private static IServiceCollection ConfigureServices() =>
+            new ServiceCollection()
+                .AddApplication()
+                .AddConsole();
     }
 }

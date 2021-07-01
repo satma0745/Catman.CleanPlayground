@@ -1,6 +1,6 @@
-namespace Catman.CleanPlayground.Services.Users
+namespace Catman.CleanPlayground.Application.Services.Users
 {
-    internal class RegisterUserModel
+    public class RegisterUserModel
     {
         public string Username { get; set; }
         
