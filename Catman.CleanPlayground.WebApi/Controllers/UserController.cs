@@ -1,7 +1,10 @@
 namespace Catman.CleanPlayground.WebApi.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using AutoMapper;
     using Catman.CleanPlayground.Application.Services.Users;
+    using Catman.CleanPlayground.WebApi.DataObjects.User;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -9,10 +12,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,7 +26,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             try
             {
                 var users = _userService.GetUsers();
-                return Ok(users);
+                
+                var dtos = _mapper.Map<ICollection<UserDto>>(users);
+                return Ok(dtos);
             }
             catch (Exception)
             {
@@ -30,11 +37,13 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult RegisterUser(RegisterUserModel registerModel)
+        public IActionResult RegisterUser(RegisterUserDto registerDto)
         {
             try
             {
+                var registerModel = _mapper.Map<RegisterUserModel>(registerDto);
                 _userService.RegisterUser(registerModel);
+                
                 return Ok();
             }
             catch (Exception)
@@ -43,12 +52,16 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             }
         }
 
-        [HttpPost("update")]
-        public IActionResult UpdateUser(UpdateUserModel updateModel)
+        [HttpPost("{id}/update")]
+        public IActionResult UpdateUser([FromRoute] byte id, UpdateUserDto updateDto)
         {
             try
             {
+                var updateModel = _mapper.Map<UpdateUserModel>(updateDto);
+                updateModel.Id = id;
+                
                 _userService.UpdateUser(updateModel);
+                
                 return Ok();
             }
             catch (Exception)

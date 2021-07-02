@@ -10,8 +10,9 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
         {
             var persistenceAssembly = typeof(PersistenceInjectionExtensions).Assembly;
             var applicationAssembly = typeof(ApplicationInjectionExtensions).Assembly;
+            var webApiAssembly = typeof(Program).Assembly;
 
-            return services.AddAutoMapper(persistenceAssembly, applicationAssembly);
+            return services.AddAutoMapper(persistenceAssembly, applicationAssembly, webApiAssembly);
         }
     }
 }
