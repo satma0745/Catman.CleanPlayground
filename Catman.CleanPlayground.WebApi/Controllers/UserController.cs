@@ -43,8 +43,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             return operationResult.Select(
                 onSuccess: () => Ok(),
                 onFailure: error => error switch
-                {
-                    ConflictError => BadRequest(error.Message),
+                {                  
+                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
                     _ => (IActionResult) StatusCode(500)
                 });
         }
@@ -61,7 +61,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 onSuccess: () => Ok(),
                 onFailure: error => error switch
                 {
-                    ConflictError => BadRequest(error.Message),
+                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
                     NotFoundError => NotFound(),
                     _ => (IActionResult) StatusCode(500)
                 });
