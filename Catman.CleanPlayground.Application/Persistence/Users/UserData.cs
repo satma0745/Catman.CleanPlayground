@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.Data.Users
+namespace Catman.CleanPlayground.Application.Persistence.Users
 {
     public class UserData
     {

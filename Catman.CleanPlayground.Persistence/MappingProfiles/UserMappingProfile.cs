@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.Persistence.MappingProfiles
 {
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Data.Users;
+    using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Persistence.Entities;
 
     internal class UserMappingProfile : Profile

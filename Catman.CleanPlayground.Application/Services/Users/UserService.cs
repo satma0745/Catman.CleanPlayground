@@ -2,8 +2,9 @@ namespace Catman.CleanPlayground.Application.Services.Users
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Data.Users;
+    using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
 
     internal class UserService : IUserService
@@ -17,11 +18,11 @@ namespace Catman.CleanPlayground.Application.Services.Users
             _mapper = mapper;
         }
 
-        public OperationResult<ICollection<UserModel>> GetUsers()
+        public async Task<OperationResult<ICollection<UserModel>>> GetUsersAsync()
         {
             try
             {
-                var usersData = _userRepository.GetUsers();
+                var usersData = await _userRepository.GetUsersAsync();
                 var users = _mapper.Map<ICollection<UserModel>>(usersData);
                 return new OperationResult<ICollection<UserModel>>(users);
             }
@@ -32,19 +33,19 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
         }
 
-        public OperationResult RegisterUser(RegisterUserModel registerModel)
+        public async Task<OperationResult> RegisterUserAsync(RegisterUserModel registerModel)
         {
             try
             {
                 var checkParams = new UsernameAvailabilityCheckParameters(registerModel.Username);
-                if (!_userRepository.UsernameIsAvailable(checkParams))
+                if (!await _userRepository.UsernameIsAvailableAsync(checkParams))
                 {
                     var conflictError = new Error("Username already taken.");
                     return new OperationResult(conflictError);
                 }
 
                 var createData = _mapper.Map<UserCreateData>(registerModel);
-                _userRepository.CreateUser(createData);
+                await _userRepository.CreateUserAsync(createData);
 
                 return new OperationResult();
             }
@@ -55,25 +56,25 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
         }
 
-        public OperationResult UpdateUser(UpdateUserModel updateModel)
+        public async Task<OperationResult> UpdateUserAsync(UpdateUserModel updateModel)
         {
             try
             {
-                if (!UserExists(updateModel.Id))
+                if (!await UserExists(updateModel.Id))
                 {
                     var notFoundError = new Error("User not found.");
                     return new OperationResult(notFoundError);
                 }
 
                 var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id);
-                if (!_userRepository.UsernameIsAvailable(checkParameters))
+                if (!await _userRepository.UsernameIsAvailableAsync(checkParameters))
                 {
                     var conflictError = new Error("Username already taken.");
                     return new OperationResult(conflictError);
                 }
 
                 var updateData = _mapper.Map<UserUpdateData>(updateModel);
-                _userRepository.UpdateUser(updateData);
+                await _userRepository.UpdateUserAsync(updateData);
 
                 return new OperationResult();
             }
@@ -84,17 +85,17 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
         }
 
-        public OperationResult DeleteUser(byte userId)
+        public async Task<OperationResult> DeleteUserAsync(byte userId)
         {
             try
             {
-                if (!UserExists(userId))
+                if (!await UserExists(userId))
                 {
                     var notFoundError = new Error("User not found.");
                     return new OperationResult(notFoundError);
                 }
             
-                _userRepository.RemoveUser(userId);
+                await _userRepository.RemoveUserAsync(userId);
                 
                 return new OperationResult();
             }
@@ -105,7 +106,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
         }
         
-        private bool UserExists(byte userId) =>
-            _userRepository.UserExists(userId);
+        private Task<bool> UserExists(byte userId) =>
+            _userRepository.UserExistsAsync(userId);
     }
 }

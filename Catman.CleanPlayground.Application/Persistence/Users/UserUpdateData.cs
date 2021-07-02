@@ -1,7 +1,9 @@
-namespace Catman.CleanPlayground.Application.Data.Users
+namespace Catman.CleanPlayground.Application.Persistence.Users
 {
-    public class UserCreateData
+    public class UserUpdateData
     {
+        public byte Id { get; set; }
+        
         public string Username { get; set; }
         
         public string Password { get; set; }

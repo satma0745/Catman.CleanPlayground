@@ -2,8 +2,9 @@ namespace Catman.CleanPlayground.Persistence.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Data.Users;
+    using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Persistence.Entities;
 
     internal class InMemoryUserRepository : IUserRepository
@@ -18,26 +19,28 @@ namespace Catman.CleanPlayground.Persistence.Repositories
             _mapper = mapper;
         }
 
-        public bool UserExists(byte userId) =>
-            _users.Any(user => user.Id == userId);
+        public Task<bool> UserExistsAsync(byte userId)
+        {
+            var userExists = _users.Any(user => user.Id == userId);
+            return Task.FromResult(userExists);
+        }
         
-        public bool UsernameIsAvailable(UsernameAvailabilityCheckParameters checkParameters) =>
-            _users
+        public Task<bool> UsernameIsAvailableAsync(UsernameAvailabilityCheckParameters checkParameters)
+        {
+            var isAvailable = _users
                 .Where(user => user.Id != checkParameters.ExceptUserWithId)
                 .All(user => user.Username != checkParameters.Username);
 
-        public UserData GetUser(byte userId)
-        {
-            var userEntity = _users.Single(user => user.Id == userId);
-            
-            var userData = _mapper.Map<UserData>(userEntity);
-            return userData;
+            return Task.FromResult(isAvailable);
         }
 
-        public ICollection<UserData> GetUsers() =>
-            _mapper.Map<ICollection<UserData>>(_users);
+        public Task<ICollection<UserData>> GetUsersAsync()
+        {
+            var users = _mapper.Map<ICollection<UserData>>(_users);
+            return Task.FromResult(users);
+        }
 
-        public void CreateUser(UserCreateData createData)
+        public Task CreateUserAsync(UserCreateData createData)
         {
             var userId = _nextId;
             _nextId += 1;
@@ -46,18 +49,24 @@ namespace Catman.CleanPlayground.Persistence.Repositories
             user.Id = userId;
             
             _users.Add(user);
+            
+            return Task.CompletedTask;
         }
 
-        public void UpdateUser(UserUpdateData updateData)
+        public Task UpdateUserAsync(UserUpdateData updateData)
         {
             var userToUpdate = _users.Single(user => user.Id == updateData.Id);
             _mapper.Map(updateData, userToUpdate);
+            
+            return Task.CompletedTask;
         }
 
-        public void RemoveUser(byte userId)
+        public Task RemoveUserAsync(byte userId)
         {
             var userToDelete = _users.Single(user => user.Id == userId);
             _users.Remove(userToDelete);
+            
+            return Task.CompletedTask;
         }
     }
 }

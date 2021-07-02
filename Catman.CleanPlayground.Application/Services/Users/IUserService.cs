@@ -1,16 +1,17 @@
 namespace Catman.CleanPlayground.Application.Services.Users
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Services.Common.Response;
 
     public interface IUserService
     {
-        OperationResult<ICollection<UserModel>> GetUsers();
+        Task<OperationResult<ICollection<UserModel>>> GetUsersAsync();
 
-        OperationResult RegisterUser(RegisterUserModel registerModel);
+        Task<OperationResult> RegisterUserAsync(RegisterUserModel registerModel);
 
-        OperationResult UpdateUser(UpdateUserModel updateModel);
+        Task<OperationResult> UpdateUserAsync(UpdateUserModel updateModel);
 
-        OperationResult DeleteUser(byte userId);
+        Task<OperationResult> DeleteUserAsync(byte userId);
     }
 }
