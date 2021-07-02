@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Extensions.DependencyInjection
+namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
     using Catman.CleanPlayground.Persistence.Extensions.DependencyInjection;

@@ -7,6 +7,6 @@ namespace Catman.CleanPlayground.Persistence.Extensions.DependencyInjection
     public static class PersistenceInjectionExtensions
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services) =>
-            services.AddScoped<IUserRepository, InMemoryUserRepository>();
+            services.AddSingleton<IUserRepository, InMemoryUserRepository>();
     }
 }
