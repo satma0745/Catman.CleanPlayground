@@ -1,5 +1,7 @@
 namespace Catman.CleanPlayground.Application.Services.Common.Response
 {
+    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
+
     public class OperationResult<TResource>
     {
         private readonly bool _success;

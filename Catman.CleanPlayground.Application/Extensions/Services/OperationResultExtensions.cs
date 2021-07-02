@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.Application.Extensions.Services
 {
     using System;
     using Catman.CleanPlayground.Application.Services.Common.Response;
+    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
 
     public static class OperationResultExtensions
     {

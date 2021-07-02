@@ -6,6 +6,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
+    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
 
     internal class UserService : IUserService
     {
@@ -28,7 +29,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
             catch (Exception exception)
             {
-                var fatalError = new Error(exception.Message);
+                var fatalError = new FatalError(exception);
                 return new OperationResult<ICollection<UserModel>>(fatalError);
             }
         }
@@ -40,7 +41,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
                 var checkParams = new UsernameAvailabilityCheckParameters(registerModel.Username);
                 if (!await _userRepository.UsernameIsAvailableAsync(checkParams))
                 {
-                    var conflictError = new Error("Username already taken.");
+                    var conflictError = new ConflictError("Username already taken.");
                     return new OperationResult(conflictError);
                 }
 
@@ -51,7 +52,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
             catch (Exception exception)
             {
-                var fatalError = new Error(exception.Message);
+                var fatalError = new FatalError(exception);
                 return new OperationResult(fatalError);
             }
         }
@@ -62,14 +63,14 @@ namespace Catman.CleanPlayground.Application.Services.Users
             {
                 if (!await UserExists(updateModel.Id))
                 {
-                    var notFoundError = new Error("User not found.");
+                    var notFoundError = new NotFoundError("User not found.");
                     return new OperationResult(notFoundError);
                 }
 
                 var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id);
                 if (!await _userRepository.UsernameIsAvailableAsync(checkParameters))
                 {
-                    var conflictError = new Error("Username already taken.");
+                    var conflictError = new ConflictError("Username already taken.");
                     return new OperationResult(conflictError);
                 }
 
@@ -80,7 +81,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
             catch (Exception exception)
             {
-                var fatalError = new Error(exception.Message);
+                var fatalError = new FatalError(exception);
                 return new OperationResult(fatalError);
             }
         }
@@ -91,7 +92,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             {
                 if (!await UserExists(userId))
                 {
-                    var notFoundError = new Error("User not found.");
+                    var notFoundError = new NotFoundError("User not found.");
                     return new OperationResult(notFoundError);
                 }
             
@@ -101,7 +102,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
             }
             catch (Exception exception)
             {
-                var fatalError = new Error(exception.Message);
+                var fatalError = new FatalError(exception);
                 return new OperationResult(fatalError);
             }
         }

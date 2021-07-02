@@ -4,6 +4,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Extensions.Services;
+    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.WebApi.DataObjects.User;
     using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             
             return operationResult.Select(
                 onSuccess: _ => Ok(),
-                onFailure: _ => StatusCode(500));
+                onFailure: error => error switch
+                {
+                    ConflictError => BadRequest(error.Message),
+                    _ => (IActionResult) StatusCode(500)
+                });
         }
 
         [HttpPost("{id}/update")]
@@ -52,7 +57,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             
             return operationResult.Select(
                 onSuccess: _ => Ok(),
-                onFailure: _ => StatusCode(500));
+                onFailure: error => error switch
+                {
+                    ConflictError => BadRequest(error.Message),
+                    NotFoundError => NotFound(),
+                    _ => (IActionResult) StatusCode(500)
+                });
         }
 
         [HttpGet("{userId}/delete")]
@@ -62,7 +72,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             
             return operationResult.Select(
                 onSuccess: _ => Ok(),
-                onFailure: _ => StatusCode(500));
+                onFailure: error => error switch
+                {
+                    NotFoundError => NotFound(),
+                    _ => (IActionResult) StatusCode(500)
+                });
         }
     }
 }
