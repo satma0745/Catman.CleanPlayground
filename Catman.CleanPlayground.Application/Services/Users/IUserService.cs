@@ -1,5 +1,6 @@
 namespace Catman.CleanPlayground.Application.Services.Users
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -13,6 +14,6 @@ namespace Catman.CleanPlayground.Application.Services.Users
 
         Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserModel updateModel);
 
-        Task<OperationResult<OperationSuccess>> DeleteUserAsync(byte userId);
+        Task<OperationResult<OperationSuccess>> DeleteUserAsync(Guid userId);
     }
 }

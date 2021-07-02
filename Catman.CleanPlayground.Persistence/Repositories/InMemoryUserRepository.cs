@@ -1,5 +1,6 @@
 namespace Catman.CleanPlayground.Persistence.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,14 +13,12 @@ namespace Catman.CleanPlayground.Persistence.Repositories
         private readonly ICollection<UserEntity> _users = new List<UserEntity>();
         private readonly IMapper _mapper;
 
-        private byte _nextId = 1;
-
         public InMemoryUserRepository(IMapper mapper)
         {
             _mapper = mapper;
         }
 
-        public Task<bool> UserExistsAsync(byte userId)
+        public Task<bool> UserExistsAsync(Guid userId)
         {
             var userExists = _users.Any(user => user.Id == userId);
             return Task.FromResult(userExists);
@@ -42,11 +41,8 @@ namespace Catman.CleanPlayground.Persistence.Repositories
 
         public Task CreateUserAsync(UserCreateData createData)
         {
-            var userId = _nextId;
-            _nextId += 1;
-
             var user = _mapper.Map<UserEntity>(createData);
-            user.Id = userId;
+            user.Id = Guid.NewGuid();
             
             _users.Add(user);
             
@@ -61,7 +57,7 @@ namespace Catman.CleanPlayground.Persistence.Repositories
             return Task.CompletedTask;
         }
 
-        public Task RemoveUserAsync(byte userId)
+        public Task RemoveUserAsync(Guid userId)
         {
             var userToDelete = _users.Single(user => user.Id == userId);
             _users.Remove(userToDelete);

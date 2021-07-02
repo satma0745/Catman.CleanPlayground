@@ -1,8 +1,10 @@
 namespace Catman.CleanPlayground.Persistence.Entities
 {
+    using System;
+
     internal class UserEntity
     {
-        public byte Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Username { get; set; }
         

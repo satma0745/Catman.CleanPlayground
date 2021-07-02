@@ -1,5 +1,6 @@
 namespace Catman.CleanPlayground.WebApi.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -48,8 +49,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 });
         }
 
-        [HttpPost("{id}/update")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] byte id, UpdateUserDto updateDto)
+        [HttpPost("{id:guid}/update")]
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, UpdateUserDto updateDto)
         {
             var updateModel = _mapper.Map<UpdateUserModel>(updateDto);
             updateModel.Id = id;
@@ -66,8 +67,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 });
         }
 
-        [HttpGet("{userId}/delete")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] byte userId)
+        [HttpGet("{userId:guid}/delete")]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId)
         {
             var operationResult = await _userService.DeleteUserAsync(userId);
             

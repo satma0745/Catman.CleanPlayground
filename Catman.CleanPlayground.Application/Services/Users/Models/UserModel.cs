@@ -1,8 +1,10 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Models
 {
+    using System;
+
     public class UserModel
     {
-        public byte Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Username { get; set; }
         

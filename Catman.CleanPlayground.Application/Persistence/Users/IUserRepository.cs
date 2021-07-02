@@ -1,11 +1,12 @@
 namespace Catman.CleanPlayground.Application.Persistence.Users
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IUserRepository
     {
-        Task<bool> UserExistsAsync(byte userId);
+        Task<bool> UserExistsAsync(Guid userId);
 
         Task<bool> UsernameIsAvailableAsync(UsernameAvailabilityCheckParameters checkParameters);
 
@@ -15,6 +16,6 @@ namespace Catman.CleanPlayground.Application.Persistence.Users
 
         Task UpdateUserAsync(UserUpdateData updateData);
 
-        Task RemoveUserAsync(byte userId);
+        Task RemoveUserAsync(Guid userId);
     }
 }

@@ -1,17 +1,19 @@
 namespace Catman.CleanPlayground.Application.Persistence.Users
 {
+    using System;
+
     public class UsernameAvailabilityCheckParameters
     {
         public string Username { get; }
         
-        public byte? ExceptUserWithId { get; }
+        public Guid? ExceptUserWithId { get; }
 
         public UsernameAvailabilityCheckParameters(string username)
         {
             Username = username;
         }
 
-        public UsernameAvailabilityCheckParameters(string username, byte exceptUserWithId)
+        public UsernameAvailabilityCheckParameters(string username, Guid exceptUserWithId)
             : this(username)
         {
             ExceptUserWithId = exceptUserWithId;

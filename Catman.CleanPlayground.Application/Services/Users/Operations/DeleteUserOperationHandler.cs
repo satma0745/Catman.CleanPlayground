@@ -15,7 +15,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _userRepository = userRepository;
         }
 
-        public async Task<OperationResult<OperationSuccess>> HandleAsync(byte userId)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(Guid userId)
         {
             try
             {

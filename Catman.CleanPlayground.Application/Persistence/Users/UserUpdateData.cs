@@ -1,8 +1,10 @@
 namespace Catman.CleanPlayground.Application.Persistence.Users
 {
+    using System;
+
     public class UserUpdateData
     {
-        public byte Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Username { get; set; }
         
