@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.Application.MappingProfiles
 {
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Application.Services.Users;
+    using Catman.CleanPlayground.Application.Services.Users.Models;
 
     internal class UserMappingProfile : Profile
     {

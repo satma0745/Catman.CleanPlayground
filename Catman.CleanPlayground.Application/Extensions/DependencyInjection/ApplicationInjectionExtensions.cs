@@ -6,6 +6,8 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     public static class ApplicationInjectionExtensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services) =>
-            services.AddScoped<IUserService, UserService>();
+            services
+                .AddScoped<IUserService, UserService>()
+                .AddUserServiceOperations();
     }
 }

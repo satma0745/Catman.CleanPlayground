@@ -6,6 +6,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.Application.Extensions.Services;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
+    using Catman.CleanPlayground.Application.Services.Users.Models;
     using Catman.CleanPlayground.WebApi.DataObjects.User;
     using Microsoft.AspNetCore.Mvc;
 
