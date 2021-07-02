@@ -2,30 +2,25 @@ namespace Catman.CleanPlayground.Application.Services.Users
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using AutoMapper;
     using Catman.CleanPlayground.Application.Data.Users;
 
     internal class UserService : IUserService
     {
         private readonly IUserRepository _users;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _users = userRepository;
+            _mapper = mapper;
         }
 
         public bool UserExists(byte userId) =>
             _users.UserExists(userId);
 
         public ICollection<UserModel> GetUsers() =>
-            _users.GetUsers()
-                .Select(userEntity => new UserModel
-                {
-                    Id = userEntity.Id,
-                    Username = userEntity.Username,
-                    DisplayName = userEntity.DisplayName
-                })
-                .ToList();
+            _mapper.Map<ICollection<UserModel>>(_users.GetUsers());
 
         public void RegisterUser(RegisterUserModel registerModel)
         {
@@ -35,12 +30,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
                 throw new Exception("Username already taken.");
             }
 
-            var createData = new UserCreateData
-            {
-                Username = registerModel.Username,
-                Password = registerModel.Password,
-                DisplayName = registerModel.DisplayName
-            };
+            var createData = _mapper.Map<UserCreateData>(registerModel);
             _users.CreateUser(createData);
         }
 
@@ -57,13 +47,7 @@ namespace Catman.CleanPlayground.Application.Services.Users
                 throw new Exception("Username already taken.");
             }
 
-            var updateData = new UserUpdateData
-            {
-                Id = updateModel.Id,
-                Username = updateModel.Username,
-                Password = updateModel.Password,
-                DisplayName = updateModel.DisplayName
-            };
+            var updateData = _mapper.Map<UserUpdateData>(updateModel);
             _users.UpdateUser(updateData);
         }
 

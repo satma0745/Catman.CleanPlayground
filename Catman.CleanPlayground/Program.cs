@@ -20,6 +20,7 @@
             new ServiceCollection()
                 .AddPersistence()
                 .AddApplication()
+                .AddMappings()
                 .AddConsole();
     }
 }
