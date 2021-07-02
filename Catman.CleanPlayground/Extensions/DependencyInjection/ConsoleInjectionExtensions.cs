@@ -1,6 +1,6 @@
 namespace Catman.CleanPlayground.Extensions.DependencyInjection
 {
-    using Catman.CleanPlayground.Presentation.Users;
+    using Catman.CleanPlayground.Presentation;
     using Microsoft.Extensions.DependencyInjection;
 
     internal static class ConsoleInjectionExtensions

@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Presentation.Users
+namespace Catman.CleanPlayground.Presentation
 {
     using System;
     using Catman.CleanPlayground.Application.Services.Users;

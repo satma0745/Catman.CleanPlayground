@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.Application", "Catman.CleanPlayground.Application\Catman.CleanPlayground.Application.csproj", "{9AA7B5C8-CD91-4B69-B577-6E4A693F0E75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.Persistence", "Catman.CleanPlayground.Persistence\Catman.CleanPlayground.Persistence.csproj", "{228ACE6E-DB57-4E50-B586-D27128DBA188}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{9AA7B5C8-CD91-4B69-B577-6E4A693F0E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA7B5C8-CD91-4B69-B577-6E4A693F0E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA7B5C8-CD91-4B69-B577-6E4A693F0E75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228ACE6E-DB57-4E50-B586-D27128DBA188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228ACE6E-DB57-4E50-B586-D27128DBA188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228ACE6E-DB57-4E50-B586-D27128DBA188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228ACE6E-DB57-4E50-B586-D27128DBA188}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

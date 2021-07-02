@@ -7,9 +7,9 @@ namespace Catman.CleanPlayground.Application.Services.Users
 
     internal class UserService : IUserService
     {
-        private readonly InMemoryUserRepository _users;
+        private readonly IUserRepository _users;
 
-        public UserService(InMemoryUserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             _users = userRepository;
         }
@@ -29,18 +29,19 @@ namespace Catman.CleanPlayground.Application.Services.Users
 
         public void RegisterUser(RegisterUserModel registerModel)
         {
-            if (!_users.UsernameIsAvailable(registerModel.Username))
+            var checkParams = new UsernameAvailabilityCheckParameters(registerModel.Username);
+            if (!_users.UsernameIsAvailable(checkParams))
             {
                 throw new Exception("Username already taken.");
             }
 
-            var userEntity = new UserEntity
+            var createData = new UserCreateData
             {
                 Username = registerModel.Username,
                 Password = registerModel.Password,
                 DisplayName = registerModel.DisplayName
             };
-            _users.CreateUser(userEntity);
+            _users.CreateUser(createData);
         }
 
         public void UpdateUser(UpdateUserModel updateModel)
@@ -49,18 +50,21 @@ namespace Catman.CleanPlayground.Application.Services.Users
             {
                 throw new Exception("User not found.");
             }
-            if (!_users.UsernameIsAvailable(updateModel.Username, updateModel.Id))
+
+            var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id); 
+            if (!_users.UsernameIsAvailable(checkParameters))
             {
                 throw new Exception("Username already taken.");
             }
 
-            var entityUpdate = new UserEntity
+            var updateData = new UserUpdateData
             {
+                Id = updateModel.Id,
                 Username = updateModel.Username,
                 Password = updateModel.Password,
                 DisplayName = updateModel.DisplayName
             };
-            _users.UpdateUser(updateModel.Id, entityUpdate);
+            _users.UpdateUser(updateData);
         }
 
         public void DeleteUser(byte userId)

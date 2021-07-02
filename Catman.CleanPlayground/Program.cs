@@ -2,7 +2,8 @@
 {
     using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
     using Catman.CleanPlayground.Extensions.DependencyInjection;
-    using Catman.CleanPlayground.Presentation.Users;
+    using Catman.CleanPlayground.Persistence.Extensions.DependencyInjection;
+    using Catman.CleanPlayground.Presentation;
     using Microsoft.Extensions.DependencyInjection;
 
     internal static class Program
@@ -17,6 +18,7 @@
 
         private static IServiceCollection ConfigureServices() =>
             new ServiceCollection()
+                .AddPersistence()
                 .AddApplication()
                 .AddConsole();
     }
