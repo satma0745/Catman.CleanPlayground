@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     using FluentValidation;
     using Microsoft.Extensions.DependencyInjection;
 
-    internal static class FluentValidatorDependencyInjection
+    internal static class FluentValidatorInjectionExtensions
     {
         public static IServiceCollection AddValidators(this IServiceCollection services) =>
             services

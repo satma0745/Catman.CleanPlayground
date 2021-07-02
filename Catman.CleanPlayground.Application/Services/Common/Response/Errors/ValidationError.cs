@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.Application.Services.Common.Response.Errors
 {
     using System.Collections.Generic;
-    using System.Linq;
+    using Catman.CleanPlayground.Application.Extensions.Validation;
     using FluentValidation.Results;
 
     public class ValidationError : Error
@@ -14,8 +14,8 @@ namespace Catman.CleanPlayground.Application.Services.Common.Response.Errors
             ValidationErrors = validationErrors;
         }
 
-        public ValidationError(IEnumerable<ValidationFailure> validationFailures)
-            : this(validationFailures.ToDictionary(failure => failure.PropertyName, failure => failure.ErrorMessage))
+        public ValidationError(ValidationResult validationResult)
+            : this(validationResult.GetValidationErrors())
         {
         }
     }

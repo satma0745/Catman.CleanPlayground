@@ -5,10 +5,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Extensions.Services;
+    using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Models;
     using Catman.CleanPlayground.WebApi.DataObjects.User;
+    using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -16,11 +18,23 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+
+        private readonly IValidator<RegisterUserDto> _registerDtoValidator;
+        private readonly IValidator<UpdateUserDto> _updateDtoValidator;
+        
         private readonly IMapper _mapper;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(
+            IUserService userService,
+            IValidator<RegisterUserDto> registerDtoValidator,
+            IValidator<UpdateUserDto> updateDtoValidator,
+            IMapper mapper)
         {
             _userService = userService;
+
+            _registerDtoValidator = registerDtoValidator;
+            _updateDtoValidator = updateDtoValidator;
+            
             _mapper = mapper;
         }
 
@@ -37,6 +51,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUserAsync(RegisterUserDto registerDto)
         {
+            var validationResult = await _registerDtoValidator.ValidateAsync(registerDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.GetValidationErrors());
+            }
+            
             var registerModel = _mapper.Map<RegisterUserModel>(registerDto);
             var operationResult = await _userService.RegisterUserAsync(registerModel);
             
@@ -52,6 +72,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         [HttpPost("{id:guid}/update")]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, UpdateUserDto updateDto)
         {
+            var validationResult = await _updateDtoValidator.ValidateAsync(updateDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.GetValidationErrors());
+            }
+            
             var updateModel = _mapper.Map<UpdateUserModel>(updateDto);
             updateModel.Id = id;
 

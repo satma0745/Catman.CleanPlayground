@@ -33,7 +33,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 var validationResult = await _modelValidator.ValidateAsync(updateModel);
                 if (!validationResult.IsValid)
                 {
-                    var validationError = new ValidationError(validationResult.Errors);
+                    var validationError = new ValidationError(validationResult);
                     return new OperationResult<OperationSuccess>(validationError);
                 }
                 

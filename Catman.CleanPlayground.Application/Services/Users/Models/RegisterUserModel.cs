@@ -1,5 +1,6 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Models
 {
+    using Catman.CleanPlayground.Application.Extensions.Validation;
     using FluentValidation;
 
     public class RegisterUserModel
@@ -15,20 +16,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Models
     {
         public RegisterUserModelValidator()
         {
-            RuleFor(model => model.Username)
-                .MinimumLength(4)
-                .MaximumLength(20)
-                .NotNull();
-            
-            RuleFor(model => model.Password)
-                .MinimumLength(4)
-                .MaximumLength(20)
-                .NotNull();
-            
-            RuleFor(model => model.DisplayName)
-                .MinimumLength(4)
-                .MaximumLength(40)
-                .NotNull();
+            RuleFor(model => model.Username).ValidUsername();
+            RuleFor(model => model.Password).ValidPassword();
+            RuleFor(model => model.DisplayName).ValidDisplayName();
         }
     }
 }

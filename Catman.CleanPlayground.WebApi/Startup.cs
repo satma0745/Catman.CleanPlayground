@@ -14,7 +14,7 @@ namespace Catman.CleanPlayground.WebApi
                 .AddApplication()
                 .AddPersistence()
                 .AddMappings()
-                .AddControllers();
+                .AddWebApi();
 
         public static void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>
             application
