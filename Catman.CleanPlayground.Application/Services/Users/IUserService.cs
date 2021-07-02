@@ -9,10 +9,10 @@ namespace Catman.CleanPlayground.Application.Services.Users
     {
         Task<OperationResult<ICollection<UserModel>>> GetUsersAsync();
 
-        Task<OperationResult> RegisterUserAsync(RegisterUserModel registerModel);
+        Task<OperationResult<OperationSuccess>> RegisterUserAsync(RegisterUserModel registerModel);
 
-        Task<OperationResult> UpdateUserAsync(UpdateUserModel updateModel);
+        Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserModel updateModel);
 
-        Task<OperationResult> DeleteUserAsync(byte userId);
+        Task<OperationResult<OperationSuccess>> DeleteUserAsync(byte userId);
     }
 }

@@ -25,17 +25,4 @@ namespace Catman.CleanPlayground.Application.Services.Common.Response
         public (bool Success, TResource Resource, Error Error) Consume() =>
             (_success, _resource, _error);
     }
-
-    public class OperationResult : OperationResult<Nothing>
-    {
-        public OperationResult()
-            : base( new Nothing() )
-        {
-        }
-        
-        public OperationResult(Error error)
-            : base(error)
-        {
-        }
-    }
 }

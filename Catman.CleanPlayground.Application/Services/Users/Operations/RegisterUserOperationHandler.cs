@@ -19,7 +19,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _mapper = mapper;
         }
         
-        public async Task<OperationResult> HandleAsync(RegisterUserModel registerModel)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(RegisterUserModel registerModel)
         {
             try
             {
@@ -27,18 +27,18 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 if (!await _userRepository.UsernameIsAvailableAsync(checkParams))
                 {
                     var conflictError = new ConflictError("Username already taken.");
-                    return new OperationResult(conflictError);
+                    return new OperationResult<OperationSuccess>(conflictError);
                 }
 
                 var createData = _mapper.Map<UserCreateData>(registerModel);
                 await _userRepository.CreateUserAsync(createData);
 
-                return new OperationResult();
+                return new OperationResult<OperationSuccess>(new OperationSuccess());
             }
             catch (Exception exception)
             {
                 var fatalError = new FatalError(exception);
-                return new OperationResult(fatalError);
+                return new OperationResult<OperationSuccess>(fatalError);
             }
         }
     }

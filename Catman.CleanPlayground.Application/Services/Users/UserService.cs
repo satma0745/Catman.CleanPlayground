@@ -28,13 +28,13 @@ namespace Catman.CleanPlayground.Application.Services.Users
         public Task<OperationResult<ICollection<UserModel>>> GetUsersAsync() =>
             _getUsersOperationHandler.HandleAsync();
 
-        public Task<OperationResult> RegisterUserAsync(RegisterUserModel registerModel) =>
+        public Task<OperationResult<OperationSuccess>> RegisterUserAsync(RegisterUserModel registerModel) =>
             _registerUserOperationHandler.HandleAsync(registerModel);
 
-        public Task<OperationResult> UpdateUserAsync(UpdateUserModel updateModel) =>
+        public Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserModel updateModel) =>
             _updateUserOperationHandler.HandleAsync(updateModel);
 
-        public Task<OperationResult> DeleteUserAsync(byte userId) =>
+        public Task<OperationResult<OperationSuccess>> DeleteUserAsync(byte userId) =>
             _deleteUserOperationHandler.HandleAsync(userId);
     }
 }

@@ -40,7 +40,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             var operationResult = await _userService.RegisterUserAsync(registerModel);
             
             return operationResult.Select(
-                onSuccess: _ => Ok(),
+                onSuccess: () => Ok(),
                 onFailure: error => error switch
                 {
                     ConflictError => BadRequest(error.Message),
@@ -57,7 +57,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             var operationResult = await _userService.UpdateUserAsync(updateModel);
             
             return operationResult.Select(
-                onSuccess: _ => Ok(),
+                onSuccess: () => Ok(),
                 onFailure: error => error switch
                 {
                     ConflictError => BadRequest(error.Message),
@@ -72,7 +72,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             var operationResult = await _userService.DeleteUserAsync(userId);
             
             return operationResult.Select(
-                onSuccess: _ => Ok(),
+                onSuccess: () => Ok(),
                 onFailure: error => error switch
                 {
                     NotFoundError => NotFound(),

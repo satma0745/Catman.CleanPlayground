@@ -15,24 +15,24 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _userRepository = userRepository;
         }
 
-        public async Task<OperationResult> HandleAsync(byte userId)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(byte userId)
         {
             try
             {
                 if (!await _userRepository.UserExistsAsync(userId))
                 {
                     var notFoundError = new NotFoundError("User not found.");
-                    return new OperationResult(notFoundError);
+                    return new OperationResult<OperationSuccess>(notFoundError);
                 }
             
                 await _userRepository.RemoveUserAsync(userId);
                 
-                return new OperationResult();
+                return new OperationResult<OperationSuccess>(new OperationSuccess());
             }
             catch (Exception exception)
             {
                 var fatalError = new FatalError(exception);
-                return new OperationResult(fatalError);
+                return new OperationResult<OperationSuccess>(fatalError);
             }
         }
     }

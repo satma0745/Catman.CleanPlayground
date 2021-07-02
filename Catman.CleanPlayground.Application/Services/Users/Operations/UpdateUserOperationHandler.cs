@@ -19,32 +19,32 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _mapper = mapper;
         }
         
-        public async Task<OperationResult> HandleAsync(UpdateUserModel updateModel)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(UpdateUserModel updateModel)
         {
             try
             {
                 if (!await _userRepository.UserExistsAsync(updateModel.Id))
                 {
                     var notFoundError = new NotFoundError("User not found.");
-                    return new OperationResult(notFoundError);
+                    return new OperationResult<OperationSuccess>(notFoundError);
                 }
 
                 var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id);
                 if (!await _userRepository.UsernameIsAvailableAsync(checkParameters))
                 {
                     var conflictError = new ConflictError("Username already taken.");
-                    return new OperationResult(conflictError);
+                    return new OperationResult<OperationSuccess>(conflictError);
                 }
 
                 var updateData = _mapper.Map<UserUpdateData>(updateModel);
                 await _userRepository.UpdateUserAsync(updateData);
 
-                return new OperationResult();
+                return new OperationResult<OperationSuccess>(new OperationSuccess());
             }
             catch (Exception exception)
             {
                 var fatalError = new FatalError(exception);
-                return new OperationResult(fatalError);
+                return new OperationResult<OperationSuccess>(fatalError);
             }
         }
     }

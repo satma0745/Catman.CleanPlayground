@@ -16,5 +16,11 @@ namespace Catman.CleanPlayground.Application.Extensions.Services
                 ? onSuccess(resource)
                 : onFailure(error);
         }
+
+        public static TSelected Select<TSelected>(
+            this OperationResult<OperationSuccess> operationResult,
+            Func<TSelected> onSuccess,
+            Func<Error, TSelected> onFailure) =>
+            operationResult.Select(onSuccess: _ => onSuccess(), onFailure);
     }
 }
