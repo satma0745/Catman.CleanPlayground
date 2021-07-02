@@ -4,61 +4,108 @@ namespace Catman.CleanPlayground.Application.Services.Users
     using System.Collections.Generic;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Data.Users;
+    using Catman.CleanPlayground.Application.Services.Common.Response;
 
     internal class UserService : IUserService
     {
-        private readonly IUserRepository _users;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
         public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            _users = userRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public bool UserExists(byte userId) =>
-            _users.UserExists(userId);
-
-        public ICollection<UserModel> GetUsers() =>
-            _mapper.Map<ICollection<UserModel>>(_users.GetUsers());
-
-        public void RegisterUser(RegisterUserModel registerModel)
+        public OperationResult<ICollection<UserModel>> GetUsers()
         {
-            var checkParams = new UsernameAvailabilityCheckParameters(registerModel.Username);
-            if (!_users.UsernameIsAvailable(checkParams))
+            try
             {
-                throw new Exception("Username already taken.");
+                var usersData = _userRepository.GetUsers();
+                var users = _mapper.Map<ICollection<UserModel>>(usersData);
+                return new OperationResult<ICollection<UserModel>>(users);
             }
-
-            var createData = _mapper.Map<UserCreateData>(registerModel);
-            _users.CreateUser(createData);
+            catch (Exception exception)
+            {
+                var fatalError = new Error(exception.Message);
+                return new OperationResult<ICollection<UserModel>>(fatalError);
+            }
         }
 
-        public void UpdateUser(UpdateUserModel updateModel)
+        public OperationResult RegisterUser(RegisterUserModel registerModel)
         {
-            if (!UserExists(updateModel.Id))
+            try
             {
-                throw new Exception("User not found.");
-            }
+                var checkParams = new UsernameAvailabilityCheckParameters(registerModel.Username);
+                if (!_userRepository.UsernameIsAvailable(checkParams))
+                {
+                    var conflictError = new Error("Username already taken.");
+                    return new OperationResult(conflictError);
+                }
 
-            var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id); 
-            if (!_users.UsernameIsAvailable(checkParameters))
+                var createData = _mapper.Map<UserCreateData>(registerModel);
+                _userRepository.CreateUser(createData);
+
+                return new OperationResult();
+            }
+            catch (Exception exception)
             {
-                throw new Exception("Username already taken.");
+                var fatalError = new Error(exception.Message);
+                return new OperationResult(fatalError);
             }
-
-            var updateData = _mapper.Map<UserUpdateData>(updateModel);
-            _users.UpdateUser(updateData);
         }
 
-        public void DeleteUser(byte userId)
+        public OperationResult UpdateUser(UpdateUserModel updateModel)
         {
-            if (!UserExists(userId))
+            try
             {
-                throw new Exception("User not found.");
+                if (!UserExists(updateModel.Id))
+                {
+                    var notFoundError = new Error("User not found.");
+                    return new OperationResult(notFoundError);
+                }
+
+                var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id);
+                if (!_userRepository.UsernameIsAvailable(checkParameters))
+                {
+                    var conflictError = new Error("Username already taken.");
+                    return new OperationResult(conflictError);
+                }
+
+                var updateData = _mapper.Map<UserUpdateData>(updateModel);
+                _userRepository.UpdateUser(updateData);
+
+                return new OperationResult();
             }
+            catch (Exception exception)
+            {
+                var fatalError = new Error(exception.Message);
+                return new OperationResult(fatalError);
+            }
+        }
+
+        public OperationResult DeleteUser(byte userId)
+        {
+            try
+            {
+                if (!UserExists(userId))
+                {
+                    var notFoundError = new Error("User not found.");
+                    return new OperationResult(notFoundError);
+                }
             
-            _users.RemoveUser(userId);
+                _userRepository.RemoveUser(userId);
+                
+                return new OperationResult();
+            }
+            catch (Exception exception)
+            {
+                var fatalError = new Error(exception.Message);
+                return new OperationResult(fatalError);
+            }
         }
+        
+        private bool UserExists(byte userId) =>
+            _userRepository.UserExists(userId);
     }
 }

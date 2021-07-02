@@ -1,17 +1,16 @@
 namespace Catman.CleanPlayground.Application.Services.Users
 {
     using System.Collections.Generic;
+    using Catman.CleanPlayground.Application.Services.Common.Response;
 
     public interface IUserService
     {
-        bool UserExists(byte userId);
+        OperationResult<ICollection<UserModel>> GetUsers();
 
-        ICollection<UserModel> GetUsers();
+        OperationResult RegisterUser(RegisterUserModel registerModel);
 
-        void RegisterUser(RegisterUserModel registerModel);
+        OperationResult UpdateUser(UpdateUserModel updateModel);
 
-        void UpdateUser(UpdateUserModel updateModel);
-
-        void DeleteUser(byte userId);
+        OperationResult DeleteUser(byte userId);
     }
 }
