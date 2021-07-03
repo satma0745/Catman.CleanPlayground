@@ -70,7 +70,10 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpPost("{id:guid}/update")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, [FromBody] UpdateUserDto updateDto)
+        public async Task<IActionResult> UpdateUserAsync(
+            [FromRoute] Guid id,
+            [FromHeader] string authorization,
+            [FromBody] UpdateUserDto updateDto)
         {
             var validationResult = await _updateDtoValidator.ValidateAsync(updateDto);
             if (!validationResult.IsValid)
@@ -80,6 +83,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             
             var updateModel = _mapper.Map<UpdateUserModel>(updateDto);
             updateModel.Id = id;
+            updateModel.AuthenticationToken = authorization;
 
             var operationResult = await _userService.UpdateUserAsync(updateModel);
             
@@ -96,12 +100,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet("{userId:guid}/delete")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromBody] DeleteUserDto deleteDto)
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization)
         {
             var deleteModel = new DeleteUserModel
             {
                 Id = userId,
-                AuthenticationToken = deleteDto.AuthenticationToken
+                AuthenticationToken = authorization
             };
             var operationResult = await _userService.DeleteUserAsync(deleteModel);
             
