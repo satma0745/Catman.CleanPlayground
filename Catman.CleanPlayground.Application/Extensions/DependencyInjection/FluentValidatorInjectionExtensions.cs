@@ -15,7 +15,8 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
         private static IServiceCollection AddUserValidators(this IServiceCollection services) =>
             services
                 .AddScoped<IValidator<RegisterUserModel>, RegisterUserModelValidator>()
-                .AddScoped<IValidator<UpdateUserModel>, UpdateUserModelValidator>();
+                .AddScoped<IValidator<UpdateUserModel>, UpdateUserModelValidator>()
+                .AddScoped<IValidator<DeleteUserModel>, DeleteUserModelValidator>();
 
         private static IServiceCollection AddAuthenticationValidators(this IServiceCollection services) =>
             services.AddScoped<IValidator<UserCredentialsModel>, UserCredentialsModelValidator>();

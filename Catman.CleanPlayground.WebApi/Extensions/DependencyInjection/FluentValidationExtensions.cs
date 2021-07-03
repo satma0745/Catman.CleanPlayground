@@ -15,7 +15,8 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
         private static IServiceCollection AddUserValidators(this IServiceCollection services) =>
             services
                 .AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>()
-                .AddScoped<IValidator<UpdateUserDto>, UpdateUserDtoValidator>();
+                .AddScoped<IValidator<UpdateUserDto>, UpdateUserDtoValidator>()
+                .AddScoped<IValidator<DeleteUserDto>, DeleteUserDtoValidator>();
 
         private static IServiceCollection AddAuthenticationValidators(this IServiceCollection services) =>
             services.AddScoped<IValidator<UserCredentialsDto>, UserCredentialsDtoValidator>();

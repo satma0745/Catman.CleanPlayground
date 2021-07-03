@@ -13,6 +13,8 @@ namespace Catman.CleanPlayground.Application.Services.Users.Models
         public string Password { get; set; }
         
         public string DisplayName { get; set; }
+        
+        public string AuthenticationToken { get; set; }
     }
 
     internal class UpdateUserModelValidator : AbstractValidator<UpdateUserModel>
@@ -23,6 +25,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Models
             RuleFor(model => model.Username).ValidUsername();
             RuleFor(model => model.Password).ValidPassword();
             RuleFor(model => model.DisplayName).ValidDisplayName();
+            RuleFor(model => model.AuthenticationToken).NotEmpty();
         }
     }
 }

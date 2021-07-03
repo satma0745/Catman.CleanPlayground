@@ -14,6 +14,9 @@ namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
         
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; }
+        
+        [JsonPropertyName("auth_token")]
+        public string AuthenticationToken { get; set; }
     }
 
     internal class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
@@ -23,6 +26,7 @@ namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
             RuleFor(dto => dto.Username).ValidUsername();
             RuleFor(dto => dto.Password).ValidPassword();
             RuleFor(dto => dto.DisplayName).ValidDisplayName();
+            RuleFor(dto => dto.AuthenticationToken).NotEmpty();
         }
     }
 }

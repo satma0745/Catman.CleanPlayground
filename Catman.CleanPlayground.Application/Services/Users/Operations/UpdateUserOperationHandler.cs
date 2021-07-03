@@ -4,6 +4,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
@@ -14,15 +15,18 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<UpdateUserModel> _modelValidator;
+        private readonly TokenManager _tokenManager;
         private readonly IMapper _mapper;
 
         public UpdateUserOperationHandler(
             IUserRepository userRepository,
             IValidator<UpdateUserModel> modelValidator,
+            TokenManager tokenManager,
             IMapper mapper)
         {
             _userRepository = userRepository;
             _modelValidator = modelValidator;
+            _tokenManager = tokenManager;
             _mapper = mapper;
         }
         
@@ -35,6 +39,19 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 {
                     var validationError = new ValidationError(validationResult);
                     return new OperationResult<OperationSuccess>(validationError);
+                }
+
+                var authenticationResult = await _tokenManager.AuthenticateTokenAsync(updateModel.AuthenticationToken);
+                if (!authenticationResult.IsValid)
+                {
+                    var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
+                    return new OperationResult<OperationSuccess>(authenticationError);
+                }
+
+                if (updateModel.Id != authenticationResult.UserId)
+                {
+                    var accessViolationError = new AccessViolationError("You can only edit your own profile.");
+                    return new OperationResult<OperationSuccess>(accessViolationError);
                 }
                 
                 if (!await _userRepository.UserExistsAsync(updateModel.Id))

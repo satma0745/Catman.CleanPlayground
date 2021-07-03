@@ -88,21 +88,31 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 onFailure: error => error switch
                 {
                     ValidationError validationError => BadRequest(validationError.ValidationErrors),
+                    AuthenticationError => Unauthorized(),
+                    AccessViolationError => StatusCode(403),
                     NotFoundError => NotFound(),
                     _ => (IActionResult) StatusCode(500)
                 });
         }
 
         [HttpGet("{userId:guid}/delete")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId)
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromBody] DeleteUserDto deleteDto)
         {
-            var operationResult = await _userService.DeleteUserAsync(userId);
+            var deleteModel = new DeleteUserModel
+            {
+                Id = userId,
+                AuthenticationToken = deleteDto.AuthenticationToken
+            };
+            var operationResult = await _userService.DeleteUserAsync(deleteModel);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),
                 onFailure: error => error switch
                 {
+                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
                     NotFoundError => NotFound(),
+                    AuthenticationError => Unauthorized(),
+                    AccessViolationError => StatusCode(403),
                     _ => (IActionResult) StatusCode(500)
                 });
         }
