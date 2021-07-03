@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection
 {
-    using System;
     using Catman.CleanPlayground.Application.Authentication;
+    using Catman.CleanPlayground.JwtAuthentication.Extensions.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Token;
     using JWT.Algorithms;
     using Microsoft.Extensions.Configuration;
@@ -19,16 +19,10 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjectio
             {
                 var configuration = serviceProvider.GetService<IConfiguration>();
 
-                var secretKey = configuration["CATMAN_CLEAN_PLAYGROUND_AUTH_SECRET"] ??
-                                throw new Exception("Authentication secret key required.");
-
-                var tokenLifetimeString = configuration["CATMAN_CLEAN_PLAYGROUND_TOKEN_LIFETIME_DAYS"] ??
-                                          throw new Exception("Authentication token lifetime required");
-                
                 return new JwtAuthenticationConfiguration
                 {
-                    SecretKey = secretKey,
-                    TokenLifetimeInDays = int.Parse(tokenLifetimeString),
+                    SecretKey = configuration.GetAuthSecret(),
+                    TokenLifetimeInDays = configuration.GetAuthTokenLifetime(),
                     Algorithm = new HMACSHA512Algorithm()
                 };
             });
