@@ -1,6 +1,7 @@
 namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Services.Authentication;
+    using Catman.CleanPlayground.Application.Services.Authentication.Operations;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Operations;
     using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,8 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
                 .AddScoped<DeleteUserOperationHandler>();
 
         private static IServiceCollection AddAuthenticationService(this IServiceCollection services) =>
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services
+                .AddScoped<IAuthenticationService, AuthenticationService>()
+                .AddScoped<AuthenticateUserOperationHandler>();
     }
 }
