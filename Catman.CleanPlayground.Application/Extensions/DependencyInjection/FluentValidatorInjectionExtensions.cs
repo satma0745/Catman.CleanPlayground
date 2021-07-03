@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
 {
-    using Catman.CleanPlayground.Application.Services.Authentication.Models;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
+    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
     using FluentValidation;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -14,11 +14,11 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
 
         private static IServiceCollection AddUserValidators(this IServiceCollection services) =>
             services
-                .AddScoped<IValidator<RegisterUserModel>, RegisterUserModelValidator>()
-                .AddScoped<IValidator<UpdateUserModel>, UpdateUserModelValidator>()
-                .AddScoped<IValidator<DeleteUserModel>, DeleteUserModelValidator>();
+                .AddScoped<IValidator<RegisterUserRequest>, RegisterUserRequestValidator>()
+                .AddScoped<IValidator<UpdateUserRequest>, UpdateUserRequestValidator>()
+                .AddScoped<IValidator<DeleteUserRequest>, DeleteUserRequestValidator>();
 
         private static IServiceCollection AddAuthenticationValidators(this IServiceCollection services) =>
-            services.AddScoped<IValidator<UserCredentialsModel>, UserCredentialsModelValidator>();
+            services.AddScoped<IValidator<AuthenticateUserRequest>, AuthenticateUserRequestValidator>();
     }
 }

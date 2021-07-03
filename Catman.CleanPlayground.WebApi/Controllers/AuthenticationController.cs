@@ -5,7 +5,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.Application.Extensions.Services;
     using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Authentication;
-    using Catman.CleanPlayground.Application.Services.Authentication.Models;
+    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
     using FluentValidation;
@@ -38,8 +38,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 return BadRequest(validationResult.GetValidationErrors());
             }
             
-            var credentialsModel = _mapper.Map<UserCredentialsModel>(credentialsDto);
-            var operationResult = await _authService.AuthenticateUserAsync(credentialsModel);
+            var authenticateRequest = _mapper.Map<AuthenticateUserRequest>(credentialsDto);
+            var operationResult = await _authService.AuthenticateUserAsync(authenticateRequest);
             
             return operationResult.Select(
                 onSuccess: Ok,

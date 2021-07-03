@@ -8,40 +8,40 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
     using FluentValidation;
 
     internal class UpdateUserOperationHandler
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<UpdateUserModel> _modelValidator;
+        private readonly IValidator<UpdateUserRequest> _requestValidator;
         private readonly ITokenManager _tokenManager;
         private readonly IMapper _mapper;
 
         public UpdateUserOperationHandler(
             IUserRepository userRepository,
-            IValidator<UpdateUserModel> modelValidator,
+            IValidator<UpdateUserRequest> requestValidator,
             ITokenManager tokenManager,
             IMapper mapper)
         {
             _userRepository = userRepository;
-            _modelValidator = modelValidator;
+            _requestValidator = requestValidator;
             _tokenManager = tokenManager;
             _mapper = mapper;
         }
         
-        public async Task<OperationResult<OperationSuccess>> HandleAsync(UpdateUserModel updateModel)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(UpdateUserRequest updateRequest)
         {
             try
             {
-                var validationResult = await _modelValidator.ValidateAsync(updateModel);
+                var validationResult = await _requestValidator.ValidateAsync(updateRequest);
                 if (!validationResult.IsValid)
                 {
                     var validationError = new ValidationError(validationResult);
                     return new OperationResult<OperationSuccess>(validationError);
                 }
 
-                var authenticationResult = _tokenManager.AuthenticateToken(updateModel.AuthenticationToken);
+                var authenticationResult = _tokenManager.AuthenticateToken(updateRequest.AuthenticationToken);
                 if (!authenticationResult.IsValid ||
                     !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
                 {
@@ -49,30 +49,30 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                     return new OperationResult<OperationSuccess>(authenticationError);
                 }
 
-                if (updateModel.Id != authenticationResult.UserId)
+                if (updateRequest.Id != authenticationResult.UserId)
                 {
                     var accessViolationError = new AccessViolationError("You can only edit your own profile.");
                     return new OperationResult<OperationSuccess>(accessViolationError);
                 }
                 
-                if (!await _userRepository.UserExistsAsync(updateModel.Id))
+                if (!await _userRepository.UserExistsAsync(updateRequest.Id))
                 {
                     var notFoundError = new NotFoundError("User not found.");
                     return new OperationResult<OperationSuccess>(notFoundError);
                 }
 
-                var checkParameters = new UsernameAvailabilityCheckParameters(updateModel.Username, updateModel.Id);
+                var checkParameters = new UsernameAvailabilityCheckParameters(updateRequest.Username, updateRequest.Id);
                 if (!await _userRepository.UsernameIsAvailableAsync(checkParameters))
                 {
                     var validationMessages = new Dictionary<string, string>
                     {
-                        {nameof(updateModel.Username), "Already taken."}
+                        {nameof(updateRequest.Username), "Already taken."}
                     };
                     var validationError = new ValidationError(validationMessages);
                     return new OperationResult<OperationSuccess>(validationError);
                 }
 
-                var updateData = _mapper.Map<UserUpdateData>(updateModel);
+                var updateData = _mapper.Map<UserUpdateData>(updateRequest);
                 await _userRepository.UpdateUserAsync(updateData);
 
                 return new OperationResult<OperationSuccess>(new OperationSuccess());

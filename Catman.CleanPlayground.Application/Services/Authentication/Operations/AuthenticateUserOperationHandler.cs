@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Application.Services.Authentication.Models;
+    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using FluentValidation;
@@ -12,40 +12,40 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     internal class AuthenticateUserOperationHandler
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<UserCredentialsModel> _modelValidator;
+        private readonly IValidator<AuthenticateUserRequest> _requestValidator;
         private readonly ITokenManager _tokenManager;
 
         public AuthenticateUserOperationHandler(
             IUserRepository userRepository,
-            IValidator<UserCredentialsModel> modelValidator,
+            IValidator<AuthenticateUserRequest> requestValidator,
             ITokenManager tokenManager)
         {
             _userRepository = userRepository;
-            _modelValidator = modelValidator;
+            _requestValidator = requestValidator;
             _tokenManager = tokenManager;
         }
         
-        public async Task<OperationResult<string>> HandleAsync(UserCredentialsModel credentialsModel)
+        public async Task<OperationResult<string>> HandleAsync(AuthenticateUserRequest request)
         {
-            var modelValidationResult = await _modelValidator.ValidateAsync(credentialsModel);
-            if (!modelValidationResult.IsValid)
+            var validationResult = await _requestValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                var validationError = new ValidationError(modelValidationResult);
+                var validationError = new ValidationError(validationResult);
                 return new OperationResult<string>(validationError);
             }
             
-            if (!await _userRepository.UserExistsAsync(credentialsModel.Username))
+            if (!await _userRepository.UserExistsAsync(request.Username))
             {
                 var notFoundError = new NotFoundError("User not found.");
                 return new OperationResult<string>(notFoundError);
             }
 
-            var user = await _userRepository.GetUserAsync(credentialsModel.Username);
-            if (!await _userRepository.UserHasPasswordAsync(user.Id, credentialsModel.Password))
+            var user = await _userRepository.GetUserAsync(request.Username);
+            if (!await _userRepository.UserHasPasswordAsync(user.Id, request.Password))
             {
                 var validationMessages = new Dictionary<string, string>
                 {
-                    {nameof(credentialsModel.Password), "Incorrect password."}
+                    {nameof(request.Password), "Incorrect password."}
                 };
                 var validationError = new ValidationError(validationMessages);
                 return new OperationResult<string>(validationError);

@@ -7,7 +7,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
+    using Catman.CleanPlayground.Application.Services.Users.Resources;
 
     internal class GetUsersOperationHandler
     {
@@ -20,18 +20,18 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _mapper = mapper;
         }
 
-        public async Task<OperationResult<ICollection<UserModel>>> HandleAsync()
+        public async Task<OperationResult<ICollection<UserResource>>> HandleAsync()
         {
             try
             {
                 var usersData = await _userRepository.GetUsersAsync();
-                var users = _mapper.Map<ICollection<UserModel>>(usersData);
-                return new OperationResult<ICollection<UserModel>>(users);
+                var users = _mapper.Map<ICollection<UserResource>>(usersData);
+                return new OperationResult<ICollection<UserResource>>(users);
             }
             catch (Exception exception)
             {
                 var fatalError = new FatalError(exception);
-                return new OperationResult<ICollection<UserModel>>(fatalError);
+                return new OperationResult<ICollection<UserResource>>(fatalError);
             }
         }
     }

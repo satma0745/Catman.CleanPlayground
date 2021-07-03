@@ -8,7 +8,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
@@ -57,8 +57,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 return BadRequest(validationResult.GetValidationErrors());
             }
             
-            var registerModel = _mapper.Map<RegisterUserModel>(registerDto);
-            var operationResult = await _userService.RegisterUserAsync(registerModel);
+            var registerRequest = _mapper.Map<RegisterUserRequest>(registerDto);
+            var operationResult = await _userService.RegisterUserAsync(registerRequest);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),
@@ -81,11 +81,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 return BadRequest(validationResult.GetValidationErrors());
             }
             
-            var updateModel = _mapper.Map<UpdateUserModel>(updateDto);
-            updateModel.Id = id;
-            updateModel.AuthenticationToken = authorization;
+            var updateRequest = _mapper.Map<UpdateUserRequest>(updateDto);
+            updateRequest.Id = id;
+            updateRequest.AuthenticationToken = authorization;
 
-            var operationResult = await _userService.UpdateUserAsync(updateModel);
+            var operationResult = await _userService.UpdateUserAsync(updateRequest);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),
@@ -102,12 +102,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         [HttpGet("{userId:guid}/delete")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization)
         {
-            var deleteModel = new DeleteUserModel
+            var deleteRequest = new DeleteUserRequest
             {
                 Id = userId,
                 AuthenticationToken = authorization
             };
-            var operationResult = await _userService.DeleteUserAsync(deleteModel);
+            var operationResult = await _userService.DeleteUserAsync(deleteRequest);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),

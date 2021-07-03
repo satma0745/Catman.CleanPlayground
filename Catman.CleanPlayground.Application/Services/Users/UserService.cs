@@ -3,8 +3,9 @@ namespace Catman.CleanPlayground.Application.Services.Users
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
     using Catman.CleanPlayground.Application.Services.Users.Operations;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Services.Users.Resources;
 
     internal class UserService : IUserService
     {
@@ -25,16 +26,16 @@ namespace Catman.CleanPlayground.Application.Services.Users
             _deleteUserOperationHandler = deleteUserOperationHandler;
         }
 
-        public Task<OperationResult<ICollection<UserModel>>> GetUsersAsync() =>
+        public Task<OperationResult<ICollection<UserResource>>> GetUsersAsync() =>
             _getUsersOperationHandler.HandleAsync();
 
-        public Task<OperationResult<OperationSuccess>> RegisterUserAsync(RegisterUserModel registerModel) =>
-            _registerUserOperationHandler.HandleAsync(registerModel);
+        public Task<OperationResult<OperationSuccess>> RegisterUserAsync(RegisterUserRequest registerRequest) =>
+            _registerUserOperationHandler.HandleAsync(registerRequest);
 
-        public Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserModel updateModel) =>
-            _updateUserOperationHandler.HandleAsync(updateModel);
+        public Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserRequest updateRequest) =>
+            _updateUserOperationHandler.HandleAsync(updateRequest);
 
-        public Task<OperationResult<OperationSuccess>> DeleteUserAsync(DeleteUserModel deleteModel) =>
-            _deleteUserOperationHandler.HandleAsync(deleteModel);
+        public Task<OperationResult<OperationSuccess>> DeleteUserAsync(DeleteUserRequest deleteRequest) =>
+            _deleteUserOperationHandler.HandleAsync(deleteRequest);
     }
 }

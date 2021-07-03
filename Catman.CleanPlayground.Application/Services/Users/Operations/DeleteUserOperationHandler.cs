@@ -6,37 +6,37 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
-    using Catman.CleanPlayground.Application.Services.Users.Models;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
     using FluentValidation;
 
     internal class DeleteUserOperationHandler
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<DeleteUserModel> _modelValidator;
+        private readonly IValidator<DeleteUserRequest> _requestValidator;
         private readonly ITokenManager _tokenManager;
 
         public DeleteUserOperationHandler(
             IUserRepository userRepository,
-            IValidator<DeleteUserModel> modelValidator,
+            IValidator<DeleteUserRequest> requestValidator,
             ITokenManager tokenManager)
         {
             _userRepository = userRepository;
-            _modelValidator = modelValidator;
+            _requestValidator = requestValidator;
             _tokenManager = tokenManager;
         }
 
-        public async Task<OperationResult<OperationSuccess>> HandleAsync(DeleteUserModel deleteModel)
+        public async Task<OperationResult<OperationSuccess>> HandleAsync(DeleteUserRequest deleteRequest)
         {
             try
             {
-                var validationResult = await _modelValidator.ValidateAsync(deleteModel);
+                var validationResult = await _requestValidator.ValidateAsync(deleteRequest);
                 if (!validationResult.IsValid)
                 {
                     var validationError = new ValidationError(validationResult);
                     return new OperationResult<OperationSuccess>(validationError);
                 }
                 
-                var authenticationResult = _tokenManager.AuthenticateToken(deleteModel.AuthenticationToken);
+                var authenticationResult = _tokenManager.AuthenticateToken(deleteRequest.AuthenticationToken);
                 if (!authenticationResult.IsValid ||
                     !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
                 {
@@ -44,19 +44,19 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                     return new OperationResult<OperationSuccess>(authenticationError);
                 }
 
-                if (deleteModel.Id != authenticationResult.UserId)
+                if (deleteRequest.Id != authenticationResult.UserId)
                 {
                     var accessViolationError = new AccessViolationError("You can only delete your own profile.");
                     return new OperationResult<OperationSuccess>(accessViolationError);
                 }
                 
-                if (!await _userRepository.UserExistsAsync(deleteModel.Id))
+                if (!await _userRepository.UserExistsAsync(deleteRequest.Id))
                 {
                     var notFoundError = new NotFoundError("User not found.");
                     return new OperationResult<OperationSuccess>(notFoundError);
                 }
             
-                await _userRepository.RemoveUserAsync(deleteModel.Id);
+                await _userRepository.RemoveUserAsync(deleteRequest.Id);
                 
                 return new OperationResult<OperationSuccess>(new OperationSuccess());
             }
