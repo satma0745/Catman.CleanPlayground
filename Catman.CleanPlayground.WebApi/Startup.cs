@@ -1,6 +1,7 @@
 namespace Catman.CleanPlayground.WebApi
 {
     using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
+    using Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection;
     using Catman.CleanPlayground.Persistence.Extensions.DependencyInjection;
     using Catman.CleanPlayground.WebApi.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ namespace Catman.CleanPlayground.WebApi
                 .AddApplication()
                 .AddPersistence()
                 .AddMappings()
+                .AddJwtAuthentication()
                 .AddWebApi();
 
         public static void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>

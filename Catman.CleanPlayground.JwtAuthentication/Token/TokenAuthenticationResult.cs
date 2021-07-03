@@ -1,8 +1,9 @@
-namespace Catman.CleanPlayground.Application.Authentication
+namespace Catman.CleanPlayground.JwtAuthentication.Token
 {
     using System;
+    using Catman.CleanPlayground.Application.Authentication;
 
-    internal class TokenAuthenticationResult
+    internal class TokenAuthenticationResult : ITokenAuthenticationResult
     {
         public bool IsValid { get; private init; }
         
@@ -21,11 +22,11 @@ namespace Catman.CleanPlayground.Application.Authentication
                 UserId = ownerId
             };
 
-        public static TokenAuthenticationResult ValidationFailed(string error) =>
+        public static TokenAuthenticationResult ValidationFailed(string message) =>
             new TokenAuthenticationResult
             {
                 IsValid = false,
-                ErrorMessage = error
+                ErrorMessage = message
             };
     }
 }

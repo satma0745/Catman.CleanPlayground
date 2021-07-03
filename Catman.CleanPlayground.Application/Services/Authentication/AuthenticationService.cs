@@ -13,12 +13,12 @@ namespace Catman.CleanPlayground.Application.Services.Authentication
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<UserCredentialsModel> _modelValidator;
-        private readonly TokenManager _tokenManager;
+        private readonly ITokenManager _tokenManager;
 
         public AuthenticationService(
             IUserRepository userRepository,
             IValidator<UserCredentialsModel> modelValidator,
-            TokenManager tokenManager)
+            ITokenManager tokenManager)
         {
             _userRepository = userRepository;
             _modelValidator = modelValidator;

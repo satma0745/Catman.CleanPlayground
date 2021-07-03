@@ -15,13 +15,13 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<UpdateUserModel> _modelValidator;
-        private readonly TokenManager _tokenManager;
+        private readonly ITokenManager _tokenManager;
         private readonly IMapper _mapper;
 
         public UpdateUserOperationHandler(
             IUserRepository userRepository,
             IValidator<UpdateUserModel> modelValidator,
-            TokenManager tokenManager,
+            ITokenManager tokenManager,
             IMapper mapper)
         {
             _userRepository = userRepository;
@@ -41,8 +41,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                     return new OperationResult<OperationSuccess>(validationError);
                 }
 
-                var authenticationResult = await _tokenManager.AuthenticateTokenAsync(updateModel.AuthenticationToken);
-                if (!authenticationResult.IsValid)
+                var authenticationResult = _tokenManager.AuthenticateToken(updateModel.AuthenticationToken);
+                if (!authenticationResult.IsValid ||
+                    !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
                 {
                     var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
                     return new OperationResult<OperationSuccess>(authenticationError);

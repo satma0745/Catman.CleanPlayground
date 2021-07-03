@@ -13,12 +13,12 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<DeleteUserModel> _modelValidator;
-        private readonly TokenManager _tokenManager;
+        private readonly ITokenManager _tokenManager;
 
         public DeleteUserOperationHandler(
             IUserRepository userRepository,
             IValidator<DeleteUserModel> modelValidator,
-            TokenManager tokenManager)
+            ITokenManager tokenManager)
         {
             _userRepository = userRepository;
             _modelValidator = modelValidator;
@@ -36,8 +36,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                     return new OperationResult<OperationSuccess>(validationError);
                 }
                 
-                var authenticationResult = await _tokenManager.AuthenticateTokenAsync(deleteModel.AuthenticationToken);
-                if (!authenticationResult.IsValid)
+                var authenticationResult = _tokenManager.AuthenticateToken(deleteModel.AuthenticationToken);
+                if (!authenticationResult.IsValid ||
+                    !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
                 {
                     var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
                     return new OperationResult<OperationSuccess>(authenticationError);
