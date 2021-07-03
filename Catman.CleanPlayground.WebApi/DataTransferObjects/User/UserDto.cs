@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.WebApi.DataObjects.User
+namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
 {
     using System;
     using System.Text.Json.Serialization;

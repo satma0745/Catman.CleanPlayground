@@ -1,10 +1,10 @@
-namespace Catman.CleanPlayground.WebApi.DataObjects.User
+namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
 {
     using System.Text.Json.Serialization;
     using Catman.CleanPlayground.Application.Extensions.Validation;
     using FluentValidation;
 
-    public class UpdateUserDto
+    public class RegisterUserDto
     {
         [JsonPropertyName("username")]
         public string Username { get; set; }
@@ -16,9 +16,9 @@ namespace Catman.CleanPlayground.WebApi.DataObjects.User
         public string DisplayName { get; set; }
     }
 
-    internal class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
+    internal class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
     {
-        public UpdateUserDtoValidator()
+        public RegisterUserDtoValidator()
         {
             RuleFor(dto => dto.Username).ValidUsername();
             RuleFor(dto => dto.Password).ValidPassword();

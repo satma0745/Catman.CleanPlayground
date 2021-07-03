@@ -23,6 +23,12 @@ namespace Catman.CleanPlayground.Persistence.Repositories
             var userExists = _users.Any(user => user.Id == userId);
             return Task.FromResult(userExists);
         }
+
+        public Task<bool> UserExistsAsync(string username)
+        {
+            var userExists = _users.Any(user => user.Username == username);
+            return Task.FromResult(userExists);
+        }
         
         public Task<bool> UsernameIsAvailableAsync(UsernameAvailabilityCheckParameters checkParameters)
         {
@@ -31,6 +37,22 @@ namespace Catman.CleanPlayground.Persistence.Repositories
                 .All(user => user.Username != checkParameters.Username);
 
             return Task.FromResult(isAvailable);
+        }
+
+        public Task<bool> UserHasPasswordAsync(Guid userId, string password)
+        {
+            var userEntity = _users.Single(user => user.Id == userId);
+            var validPassword = userEntity.Password == password;
+            
+            return Task.FromResult(validPassword);
+        }
+
+        public Task<UserData> GetUserAsync(string username)
+        {
+            var userEntity = _users.Single(user => user.Username == username);
+            var userData = _mapper.Map<UserData>(userEntity);
+            
+            return Task.FromResult(userData);
         }
 
         public Task<ICollection<UserData>> GetUsersAsync()

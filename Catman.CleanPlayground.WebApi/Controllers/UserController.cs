@@ -9,7 +9,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Models;
-    using Catman.CleanPlayground.WebApi.DataObjects.User;
+    using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +49,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUserAsync(RegisterUserDto registerDto)
+        public async Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto)
         {
             var validationResult = await _registerDtoValidator.ValidateAsync(registerDto);
             if (!validationResult.IsValid)
@@ -70,7 +70,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpPost("{id:guid}/update")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, UpdateUserDto updateDto)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid id, [FromBody] UpdateUserDto updateDto)
         {
             var validationResult = await _updateDtoValidator.ValidateAsync(updateDto);
             if (!validationResult.IsValid)

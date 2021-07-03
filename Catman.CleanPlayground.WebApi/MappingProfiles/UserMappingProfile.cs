@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.WebApi.MappingProfiles
 {
     using AutoMapper;
     using Catman.CleanPlayground.Application.Services.Users.Models;
-    using Catman.CleanPlayground.WebApi.DataObjects.User;
+    using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
 
     internal class UserMappingProfile : Profile
     {

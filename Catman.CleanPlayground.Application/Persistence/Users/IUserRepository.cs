@@ -8,7 +8,13 @@ namespace Catman.CleanPlayground.Application.Persistence.Users
     {
         Task<bool> UserExistsAsync(Guid userId);
 
+        Task<bool> UserExistsAsync(string username);
+
         Task<bool> UsernameIsAvailableAsync(UsernameAvailabilityCheckParameters checkParameters);
+        
+        Task<bool> UserHasPasswordAsync(Guid userId, string password);
+
+        Task<UserData> GetUserAsync(string username);
 
         Task<ICollection<UserData>> GetUsersAsync();
 
