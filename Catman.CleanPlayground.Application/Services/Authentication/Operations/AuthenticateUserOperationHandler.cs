@@ -4,10 +4,9 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
-    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 
@@ -31,23 +30,17 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
         {
             if (!await _userRepository.UserExistsAsync(parameters.Request.Username))
             {
-                var notFoundError = new NotFoundError("User not found.");
-                return new OperationResult<string>(notFoundError);
+                return NotFound("User not found.");
             }
 
             var user = await _userRepository.GetUserAsync(parameters.Request.Username);
             if (!await _userRepository.UserHasPasswordAsync(user.Id, parameters.Request.Password))
             {
-                var validationMessages = new Dictionary<string, string>
-                {
-                    {nameof(parameters.Request.Password), "Incorrect password."}
-                };
-                var validationError = new ValidationError(validationMessages);
-                return new OperationResult<string>(validationError);
+                return ValidationFailed(nameof(parameters.Request.Password), "Incorrect password.");
             }
 
             var authorizationToken = _sessionManager.GenerateAuthorizationToken(user.Id);
-            return new OperationResult<string>(authorizationToken);
+            return Success(authorizationToken);
         }
     }
 }

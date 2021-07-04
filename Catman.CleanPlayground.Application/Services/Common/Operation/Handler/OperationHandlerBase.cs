@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.Services.Common.Operation
+namespace Catman.CleanPlayground.Application.Services.Common.Operation.Handler
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,6 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
-    using FluentValidation.Results;
 
     internal abstract class OperationHandlerBase<TRequest, TResource> : IOperation<TRequest, TResource>
         where TRequest : RequestBase
@@ -30,7 +29,7 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
         {
             try
             {
-                var validationResult = await ValidateRequestAsync(request);
+                var validationResult = await RequestValidator.ValidateRequestAsync(request, _requestValidators);
                 if (!validationResult.IsValid)
                 {
                     var validationError = new ValidationError(validationResult);
@@ -63,19 +62,32 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
         protected abstract Task<OperationResult<TResource>> HandleRequestAsync(
             OperationParameters<TRequest> operationParameters);
 
-        private async Task<ValidationResult> ValidateRequestAsync(TRequest request)
+        protected OperationResult<TResource> ValidationFailed(string propertyName, string errorMessage)
         {
-            foreach (var requestValidator in _requestValidators)
+            var validationMessages = new Dictionary<string, string>
             {
-                var validationResult = await requestValidator.ValidateAsync(request);
-                if (!validationResult.IsValid)
-                {
-                    return validationResult;
-                }
-            }
-
-            var validationPassed = new ValidationResult();
-            return validationPassed;
+                {propertyName, errorMessage}
+            };
+            var validationError = new ValidationError(validationMessages);
+            return new OperationResult<TResource>(validationError);
         }
+
+        protected OperationResult<TResource> AccessViolation(string message)
+        {
+            var accessViolationError = new AccessViolationError(message);
+            return new OperationResult<TResource>(accessViolationError);
+        }
+        
+        protected OperationResult<TResource> NotFound(string message)
+        {
+            var notFoundError = new NotFoundError(message);
+            return new OperationResult<TResource>(notFoundError);
+        }
+
+        protected OperationResult<TResource> Success(TResource resource) =>
+            new OperationResult<TResource>(resource);
+
+        protected OperationResult<BlankResource> Success() =>
+            new OperationResult<BlankResource>(new BlankResource());
     }
 }

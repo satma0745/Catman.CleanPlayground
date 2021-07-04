@@ -4,10 +4,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
@@ -35,32 +34,25 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         {
             if (parameters.Request.Id != parameters.Session.CurrentUser.Id)
             {
-                var accessViolationError = new AccessViolationError("You can only edit your own profile.");
-                return new OperationResult<BlankResource>(accessViolationError);
+                return AccessViolation("You can only edit your own profile.");
             }
                 
             if (!await _userRepository.UserExistsAsync(parameters.Request.Id))
             {
-                var notFoundError = new NotFoundError("User not found.");
-                return new OperationResult<BlankResource>(notFoundError);
+                return NotFound("User not found.");
             }
 
             var usernameAvailabilityCheckParameters =
                 new UsernameAvailabilityCheckParameters(parameters.Request.Username, parameters.Request.Id);
             if (!await _userRepository.UsernameIsAvailableAsync(usernameAvailabilityCheckParameters))
             {
-                var validationMessages = new Dictionary<string, string>
-                {
-                    {nameof(parameters.Request.Username), "Already taken."}
-                };
-                var validationError = new ValidationError(validationMessages);
-                return new OperationResult<BlankResource>(validationError);
+                return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
             }
 
             var updateData = _mapper.Map<UserUpdateData>(parameters.Request);
             await _userRepository.UpdateUserAsync(updateData);
 
-            return new OperationResult<BlankResource>(new BlankResource());
+            return Success();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
@@ -33,8 +33,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         {
             var usersData = await _userRepository.GetUsersAsync();
             var users = _mapper.Map<ICollection<UserResource>>(usersData);
-            
-            return new OperationResult<ICollection<UserResource>>(users);
+            return Success(users);
         }
     }
 }
