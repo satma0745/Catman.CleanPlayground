@@ -1,8 +1,8 @@
-namespace Catman.CleanPlayground.Persistence.MappingProfiles
+namespace Catman.CleanPlayground.PostgreSqlPersistence.MappingProfiles
 {
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Persistence.Entities;
+    using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
 
     internal class UserMappingProfile : Profile
     {

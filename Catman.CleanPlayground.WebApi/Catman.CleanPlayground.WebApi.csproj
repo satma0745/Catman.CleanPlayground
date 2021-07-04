@@ -6,13 +6,17 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Catman.CleanPlayground.Application\Catman.CleanPlayground.Application.csproj" />
       <ProjectReference Include="..\Catman.CleanPlayground.JwtAuthentication\Catman.CleanPlayground.JwtAuthentication.csproj" />
-      <ProjectReference Include="..\Catman.CleanPlayground.Persistence\Catman.CleanPlayground.Persistence.csproj" />
+      <ProjectReference Include="..\Catman.CleanPlayground.PostgreSqlPersistence\Catman.CleanPlayground.PostgreSqlPersistence.csproj" />
     </ItemGroup>
 
 </Project>

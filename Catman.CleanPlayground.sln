@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.Application", "Catman.CleanPlayground.Application\Catman.CleanPlayground.Application.csproj", "{9AA7B5C8-CD91-4B69-B577-6E4A693F0E75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.Persistence", "Catman.CleanPlayground.Persistence\Catman.CleanPlayground.Persistence.csproj", "{228ACE6E-DB57-4E50-B586-D27128DBA188}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.PostgreSqlPersistence", "Catman.CleanPlayground.PostgreSqlPersistence\Catman.CleanPlayground.PostgreSqlPersistence.csproj", "{228ACE6E-DB57-4E50-B586-D27128DBA188}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catman.CleanPlayground.WebApi", "Catman.CleanPlayground.WebApi\Catman.CleanPlayground.WebApi.csproj", "{A6F0097D-FD35-465F-A1F9-2441A19A5C93}"
 EndProject

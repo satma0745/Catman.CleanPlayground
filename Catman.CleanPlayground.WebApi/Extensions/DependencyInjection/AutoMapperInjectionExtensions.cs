@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection;
-    using Catman.CleanPlayground.Persistence.Extensions.DependencyInjection;
+    using Catman.CleanPlayground.PostgreSqlPersistence.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection;
 
     internal static class AutoMapperInjectionExtensions

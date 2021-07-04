@@ -1,7 +1,7 @@
-namespace Catman.CleanPlayground.Persistence.Helpers
+namespace Catman.CleanPlayground.PostgreSqlPersistence.Helpers
 {
     using BCrypt.Net;
-    using Catman.CleanPlayground.Persistence.Entities;
+    using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
 
     internal static class PasswordHelper
     {

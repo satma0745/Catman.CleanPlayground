@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Persistence.Entities
+namespace Catman.CleanPlayground.PostgreSqlPersistence.Entities
 {
     using System;
 
