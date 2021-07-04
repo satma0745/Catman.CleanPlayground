@@ -1,6 +1,8 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Requests
 {
-    public class GetUsersRequest
+    using Catman.CleanPlayground.Application.Services.Common.Request;
+
+    public class GetUsersRequest : RequestBase
     {
     }
 }

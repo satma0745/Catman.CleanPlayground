@@ -13,6 +13,7 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
     using FluentValidation.Results;
 
     internal abstract class OperationHandlerBase<TRequest, TResource> : IOperation<TRequest, TResource>
+        where TRequest : RequestBase
     {
         private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
         private readonly IUserRepository _userRepository;
@@ -33,7 +34,7 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
             _mapper = mapper;
         }
         
-        public async Task<OperationResult<TResource>> PerformAsync(TRequest request, string authenticationToken)
+        public async Task<OperationResult<TResource>> PerformAsync(TRequest request)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
                     return new OperationResult<TResource>(validationError);
                 }
 
-                var authenticationResult = _tokenManager.AuthenticateToken(authenticationToken);
+                var authenticationResult = _tokenManager.AuthenticateToken(request.AuthorizationToken);
 
                 if (RequireAuthorizedUser)
                 {

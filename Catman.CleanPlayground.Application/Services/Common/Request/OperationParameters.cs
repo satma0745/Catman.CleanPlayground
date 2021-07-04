@@ -1,6 +1,7 @@
 namespace Catman.CleanPlayground.Application.Services.Common.Request
 {
     public class OperationParameters<TRequest>
+        where TRequest : RequestBase
     {
         public bool Authorized { get; init; }
         

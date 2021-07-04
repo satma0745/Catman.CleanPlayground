@@ -6,8 +6,6 @@ namespace Catman.CleanPlayground.Application.Services.Authentication
 
     public interface IAuthenticationService
     {
-        public Task<OperationResult<string>> AuthenticateUserAsync(
-            AuthenticateUserRequest request,
-            string authenticationToken = default);
+        public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request);
     }
 }

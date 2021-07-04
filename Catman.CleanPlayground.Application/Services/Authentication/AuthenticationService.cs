@@ -14,9 +14,7 @@ namespace Catman.CleanPlayground.Application.Services.Authentication
             _authenticateUserOperation = authenticateUserOperation;
         }
         
-        public Task<OperationResult<string>> AuthenticateUserAsync(
-            AuthenticateUserRequest request,
-            string authenticationToken) =>
-            _authenticateUserOperation.PerformAsync(request, authenticationToken);
+        public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request) =>
+            _authenticateUserOperation.PerformAsync(request);
     }
 }

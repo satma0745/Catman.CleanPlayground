@@ -1,9 +1,10 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Requests
 {
     using Catman.CleanPlayground.Application.Extensions.Validation;
+    using Catman.CleanPlayground.Application.Services.Common.Request;
     using FluentValidation;
 
-    public class RegisterUserRequest
+    public class RegisterUserRequest : RequestBase
     {
         public string Username { get; set; }
         

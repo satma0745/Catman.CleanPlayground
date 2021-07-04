@@ -42,7 +42,6 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         public async Task<IActionResult> GetUsersAsync()
         {
             var operationResult = await _userService.GetUsersAsync();
-
             return operationResult.Select(
                 onSuccess: users => Ok(_mapper.Map<ICollection<UserDto>>(users)),
                 onFailure: _ => (IActionResult) StatusCode(500));
@@ -58,8 +57,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             }
             
             var registerRequest = _mapper.Map<RegisterUserRequest>(registerDto);
-            var operationResult = await _userService.RegisterUserAsync(registerRequest);
             
+            var operationResult = await _userService.RegisterUserAsync(registerRequest);
             return operationResult.Select(
                 onSuccess: () => Ok(),
                 onFailure: error => error switch
@@ -80,12 +79,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             {
                 return BadRequest(validationResult.GetValidationErrors());
             }
-            
-            var updateRequest = _mapper.Map<UpdateUserRequest>(updateDto);
-            updateRequest.Id = id;
 
-            var operationResult = await _userService.UpdateUserAsync(updateRequest, authorization);
+            var updateRequest = new UpdateUserRequest(id, authorization);
+            _mapper.Map(updateDto, updateRequest);
             
+            var operationResult = await _userService.UpdateUserAsync(updateRequest);
             return operationResult.Select(
                 onSuccess: () => Ok(),
                 onFailure: error => error switch
@@ -101,12 +99,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         [HttpGet("{userId:guid}/delete")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization)
         {
-            var deleteRequest = new DeleteUserRequest
-            {
-                Id = userId
-            };
-            var operationResult = await _userService.DeleteUserAsync(deleteRequest, authorization);
+            var deleteRequest = new DeleteUserRequest(userId, authorization);
             
+            var operationResult = await _userService.DeleteUserAsync(deleteRequest);
             return operationResult.Select(
                 onSuccess: () => Ok(),
                 onFailure: error => error switch

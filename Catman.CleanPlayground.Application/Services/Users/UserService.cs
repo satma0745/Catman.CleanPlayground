@@ -26,22 +26,16 @@ namespace Catman.CleanPlayground.Application.Services.Users
             _deleteUserOperation = deleteUserOperation;
         }
 
-        public Task<OperationResult<ICollection<UserResource>>> GetUsersAsync(string authenticationToken) =>
-            _getUsersOperation.PerformAsync(new GetUsersRequest(), authenticationToken);
+        public Task<OperationResult<ICollection<UserResource>>> GetUsersAsync() =>
+            _getUsersOperation.PerformAsync(new GetUsersRequest());
 
-        public Task<OperationResult<BlankResource>> RegisterUserAsync(
-            RegisterUserRequest registerRequest,
-            string authenticationToken) =>
-            _registerUserOperation.PerformAsync(registerRequest, authenticationToken);
+        public Task<OperationResult<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest) =>
+            _registerUserOperation.PerformAsync(registerRequest);
 
-        public Task<OperationResult<BlankResource>> UpdateUserAsync(
-            UpdateUserRequest updateRequest,
-            string authenticationToken) =>
-            _updateUserOperation.PerformAsync(updateRequest, authenticationToken);
+        public Task<OperationResult<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest) =>
+            _updateUserOperation.PerformAsync(updateRequest);
 
-        public Task<OperationResult<BlankResource>> DeleteUserAsync(
-            DeleteUserRequest deleteRequest,
-            string authenticationToken) =>
-            _deleteUserOperation.PerformAsync(deleteRequest, authenticationToken);
+        public Task<OperationResult<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest) =>
+            _deleteUserOperation.PerformAsync(deleteRequest);
     }
 }
