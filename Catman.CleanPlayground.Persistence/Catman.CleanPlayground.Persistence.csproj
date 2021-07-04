@@ -8,4 +8,8 @@
       <ProjectReference Include="..\Catman.CleanPlayground.Application\Catman.CleanPlayground.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    </ItemGroup>
+
 </Project>

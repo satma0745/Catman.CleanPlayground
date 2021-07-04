@@ -9,8 +9,12 @@ namespace Catman.CleanPlayground.Persistence.MappingProfiles
         public UserMappingProfile()
         {
             CreateMap<UserEntity, UserData>();
-            CreateMap<UserCreateData, UserEntity>();
-            CreateMap<UserUpdateData, UserEntity>();
+            
+            CreateMap<UserCreateData, UserEntity>()
+                .ForMember(entity => entity.Password, options => options.Ignore());
+            
+            CreateMap<UserUpdateData, UserEntity>()
+                .ForMember(entity => entity.Password, options => options.Ignore());
         }
     }
 }

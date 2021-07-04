@@ -7,6 +7,7 @@ namespace Catman.CleanPlayground.Persistence.Repositories
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Persistence.Entities;
+    using Catman.CleanPlayground.Persistence.Helpers;
 
     internal class InMemoryUserRepository : IUserRepository
     {
@@ -42,7 +43,7 @@ namespace Catman.CleanPlayground.Persistence.Repositories
         public Task<bool> UserHasPasswordAsync(Guid userId, string password)
         {
             var userEntity = _users.Single(user => user.Id == userId);
-            var validPassword = userEntity.Password == password;
+            var validPassword = PasswordHelper.VerifyPassword(userEntity.Password, password);
             
             return Task.FromResult(validPassword);
         }
@@ -73,6 +74,7 @@ namespace Catman.CleanPlayground.Persistence.Repositories
         {
             var user = _mapper.Map<UserEntity>(createData);
             user.Id = Guid.NewGuid();
+            user.Password = PasswordHelper.HashPassword(createData.Password);
             
             _users.Add(user);
             
@@ -82,7 +84,9 @@ namespace Catman.CleanPlayground.Persistence.Repositories
         public Task UpdateUserAsync(UserUpdateData updateData)
         {
             var userToUpdate = _users.Single(user => user.Id == updateData.Id);
+            
             _mapper.Map(updateData, userToUpdate);
+            userToUpdate.Password = PasswordHelper.HashPassword(updateData.Password);
             
             return Task.CompletedTask;
         }
