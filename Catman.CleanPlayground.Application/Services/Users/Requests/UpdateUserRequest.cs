@@ -13,8 +13,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Requests
         public string Password { get; set; }
         
         public string DisplayName { get; set; }
-        
-        public string AuthenticationToken { get; set; }
     }
 
     internal class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
@@ -25,7 +23,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Requests
             RuleFor(request => request.Username).ValidUsername();
             RuleFor(request => request.Password).ValidPassword();
             RuleFor(request => request.DisplayName).ValidDisplayName();
-            RuleFor(request => request.AuthenticationToken).NotEmpty();
         }
     }
 }

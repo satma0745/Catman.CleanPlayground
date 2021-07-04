@@ -31,6 +31,11 @@ namespace Catman.CleanPlayground.JwtAuthentication.Token
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    return TokenAuthenticationResult.ValidationFailed("No authentication token provided.");
+                }
+                
                 var payload = _jwtBuilder.GetPayload(token);
                 return TokenAuthenticationResult.ValidationPassed(payload.UserId);
             }

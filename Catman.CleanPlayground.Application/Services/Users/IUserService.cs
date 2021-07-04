@@ -8,12 +8,18 @@ namespace Catman.CleanPlayground.Application.Services.Users
 
     public interface IUserService
     {
-        Task<OperationResult<ICollection<UserResource>>> GetUsersAsync();
+        Task<OperationResult<ICollection<UserResource>>> GetUsersAsync(string authenticationToken = default);
 
-        Task<OperationResult<OperationSuccess>> RegisterUserAsync(RegisterUserRequest registerRequest);
+        Task<OperationResult<BlankResource>> RegisterUserAsync(
+            RegisterUserRequest registerRequest,
+            string authenticationToken = default);
 
-        Task<OperationResult<OperationSuccess>> UpdateUserAsync(UpdateUserRequest updateRequest);
+        Task<OperationResult<BlankResource>> UpdateUserAsync(
+            UpdateUserRequest updateRequest,
+            string authenticationToken);
 
-        Task<OperationResult<OperationSuccess>> DeleteUserAsync(DeleteUserRequest deleteRequest);
+        Task<OperationResult<BlankResource>> DeleteUserAsync(
+            DeleteUserRequest deleteRequest,
+            string authenticationToken);
     }
 }

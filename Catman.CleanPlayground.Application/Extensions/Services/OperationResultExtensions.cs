@@ -18,7 +18,7 @@ namespace Catman.CleanPlayground.Application.Extensions.Services
         }
 
         public static TSelected Select<TSelected>(
-            this OperationResult<OperationSuccess> operationResult,
+            this OperationResult<BlankResource> operationResult,
             Func<TSelected> onSuccess,
             Func<Error, TSelected> onFailure) =>
             operationResult.Select(onSuccess: _ => onSuccess(), onFailure);

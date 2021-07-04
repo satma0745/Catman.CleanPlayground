@@ -14,6 +14,8 @@ namespace Catman.CleanPlayground.Application.Persistence.Users
         
         Task<bool> UserHasPasswordAsync(Guid userId, string password);
 
+        Task<UserData> GetUserAsync(Guid userId);
+
         Task<UserData> GetUserAsync(string username);
 
         Task<ICollection<UserData>> GetUsersAsync();

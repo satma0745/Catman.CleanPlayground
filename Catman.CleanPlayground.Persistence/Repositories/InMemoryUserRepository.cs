@@ -47,6 +47,14 @@ namespace Catman.CleanPlayground.Persistence.Repositories
             return Task.FromResult(validPassword);
         }
 
+        public Task<UserData> GetUserAsync(Guid userId)
+        {
+            var userEntity = _users.Single(user => user.Id == userId);
+            var userData = _mapper.Map<UserData>(userEntity);
+            
+            return Task.FromResult(userData);
+        }
+
         public Task<UserData> GetUserAsync(string username)
         {
             var userEntity = _users.Single(user => user.Username == username);

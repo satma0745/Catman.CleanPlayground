@@ -1,6 +1,6 @@
 namespace Catman.CleanPlayground.Application.Services.Common.Response
 {
-    public class OperationSuccess
+    public class BlankResource
     {
     }
 }

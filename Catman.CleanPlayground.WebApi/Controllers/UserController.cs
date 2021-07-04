@@ -83,9 +83,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             
             var updateRequest = _mapper.Map<UpdateUserRequest>(updateDto);
             updateRequest.Id = id;
-            updateRequest.AuthenticationToken = authorization;
 
-            var operationResult = await _userService.UpdateUserAsync(updateRequest);
+            var operationResult = await _userService.UpdateUserAsync(updateRequest, authorization);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),
@@ -104,10 +103,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         {
             var deleteRequest = new DeleteUserRequest
             {
-                Id = userId,
-                AuthenticationToken = authorization
+                Id = userId
             };
-            var operationResult = await _userService.DeleteUserAsync(deleteRequest);
+            var operationResult = await _userService.DeleteUserAsync(deleteRequest, authorization);
             
             return operationResult.Select(
                 onSuccess: () => Ok(),

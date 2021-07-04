@@ -1,9 +1,15 @@
 namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
 {
+    using System.Collections.Generic;
     using Catman.CleanPlayground.Application.Services.Authentication;
     using Catman.CleanPlayground.Application.Services.Authentication.Operations;
+    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
+    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Operations;
+    using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Services.Users.Resources;
     using Microsoft.Extensions.DependencyInjection;
 
     internal static class ServiceInjectionExtensions
@@ -16,14 +22,14 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
         private static IServiceCollection AddUserService(this IServiceCollection services) =>
             services
                 .AddScoped<IUserService, UserService>()
-                .AddScoped<GetUsersOperationHandler>()
-                .AddScoped<RegisterUserOperationHandler>()
-                .AddScoped<UpdateUserOperationHandler>()
-                .AddScoped<DeleteUserOperationHandler>();
+                .AddScoped<IOperation<GetUsersRequest, ICollection<UserResource>>, GetUsersOperationHandler>()
+                .AddScoped<IOperation<RegisterUserRequest, BlankResource>, RegisterUserOperationHandler>()
+                .AddScoped<IOperation<UpdateUserRequest, BlankResource>, UpdateUserOperationHandler>()
+                .AddScoped<IOperation<DeleteUserRequest, BlankResource>, DeleteUserOperationHandler>();
 
         private static IServiceCollection AddAuthenticationService(this IServiceCollection services) =>
             services
                 .AddScoped<IAuthenticationService, AuthenticationService>()
-                .AddScoped<AuthenticateUserOperationHandler>();
+                .AddScoped<IOperation<AuthenticateUserRequest, string>, AuthenticateUserOperationHandler>();
     }
 }

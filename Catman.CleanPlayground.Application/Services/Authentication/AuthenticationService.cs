@@ -1,20 +1,22 @@
 namespace Catman.CleanPlayground.Application.Services.Authentication
 {
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Services.Authentication.Operations;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
+    using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Response;
 
     internal class AuthenticationService : IAuthenticationService
     {
-        private readonly AuthenticateUserOperationHandler _authenticateUserOperationHandler;
+        private readonly IOperation<AuthenticateUserRequest, string> _authenticateUserOperation;
 
-        public AuthenticationService(AuthenticateUserOperationHandler authenticateUserOperationHandler)
+        public AuthenticationService(IOperation<AuthenticateUserRequest, string> authenticateUserOperation)
         {
-            _authenticateUserOperationHandler = authenticateUserOperationHandler;
+            _authenticateUserOperation = authenticateUserOperation;
         }
         
-        public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request) =>
-            _authenticateUserOperationHandler.HandleAsync(request);
+        public Task<OperationResult<string>> AuthenticateUserAsync(
+            AuthenticateUserRequest request,
+            string authenticationToken) =>
+            _authenticateUserOperation.PerformAsync(request, authenticationToken);
     }
 }

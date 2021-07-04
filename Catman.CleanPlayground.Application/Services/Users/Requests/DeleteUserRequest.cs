@@ -6,8 +6,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Requests
     public class DeleteUserRequest
     {
         public Guid Id { get; set; }
-        
-        public string AuthenticationToken { get; set; }
     }
 
     internal class DeleteUserRequestValidator : AbstractValidator<DeleteUserRequest>
@@ -15,7 +13,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Requests
         public DeleteUserRequestValidator()
         {
             RuleFor(request => request.Id).NotEmpty();
-            RuleFor(request => request.AuthenticationToken).NotEmpty();
         }
     }
 }

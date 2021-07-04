@@ -1,70 +1,51 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Operations
 {
-    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using FluentValidation;
 
-    internal class DeleteUserOperationHandler
+    internal class DeleteUserOperationHandler : OperationHandlerBase<DeleteUserRequest, BlankResource>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<DeleteUserRequest> _requestValidator;
-        private readonly ITokenManager _tokenManager;
+
+        protected override bool RequireAuthorizedUser => true;
 
         public DeleteUserOperationHandler(
             IUserRepository userRepository,
-            IValidator<DeleteUserRequest> requestValidator,
-            ITokenManager tokenManager)
+            IEnumerable<IValidator<DeleteUserRequest>> requestValidators,
+            ITokenManager tokenManager,
+            IMapper mapper)
+            : base(requestValidators, userRepository, tokenManager, mapper)
         {
             _userRepository = userRepository;
-            _requestValidator = requestValidator;
-            _tokenManager = tokenManager;
         }
 
-        public async Task<OperationResult<OperationSuccess>> HandleAsync(DeleteUserRequest deleteRequest)
+        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
+            OperationParameters<DeleteUserRequest> parameters)
         {
-            try
+            if (parameters.Request.Id != parameters.CurrentUser.Id)
             {
-                var validationResult = await _requestValidator.ValidateAsync(deleteRequest);
-                if (!validationResult.IsValid)
-                {
-                    var validationError = new ValidationError(validationResult);
-                    return new OperationResult<OperationSuccess>(validationError);
-                }
+                var accessViolationError = new AccessViolationError("You can only delete your own profile.");
+                return new OperationResult<BlankResource>(accessViolationError);
+            }
                 
-                var authenticationResult = _tokenManager.AuthenticateToken(deleteRequest.AuthenticationToken);
-                if (!authenticationResult.IsValid ||
-                    !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
-                {
-                    var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
-                    return new OperationResult<OperationSuccess>(authenticationError);
-                }
-
-                if (deleteRequest.Id != authenticationResult.UserId)
-                {
-                    var accessViolationError = new AccessViolationError("You can only delete your own profile.");
-                    return new OperationResult<OperationSuccess>(accessViolationError);
-                }
-                
-                if (!await _userRepository.UserExistsAsync(deleteRequest.Id))
-                {
-                    var notFoundError = new NotFoundError("User not found.");
-                    return new OperationResult<OperationSuccess>(notFoundError);
-                }
+            if (!await _userRepository.UserExistsAsync(parameters.Request.Id))
+            {
+                var notFoundError = new NotFoundError("User not found.");
+                return new OperationResult<BlankResource>(notFoundError);
+            }
             
-                await _userRepository.RemoveUserAsync(deleteRequest.Id);
+            await _userRepository.RemoveUserAsync(parameters.Request.Id);
                 
-                return new OperationResult<OperationSuccess>(new OperationSuccess());
-            }
-            catch (Exception exception)
-            {
-                var fatalError = new FatalError(exception);
-                return new OperationResult<OperationSuccess>(fatalError);
-            }
+            return new OperationResult<BlankResource>(new BlankResource());
         }
     }
 }

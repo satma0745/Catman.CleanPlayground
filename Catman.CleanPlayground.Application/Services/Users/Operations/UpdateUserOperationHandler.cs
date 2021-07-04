@@ -1,87 +1,66 @@
 namespace Catman.CleanPlayground.Application.Services.Users.Operations
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Services.Common.Operation;
+    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using FluentValidation;
 
-    internal class UpdateUserOperationHandler
+    internal class UpdateUserOperationHandler : OperationHandlerBase<UpdateUserRequest, BlankResource>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IValidator<UpdateUserRequest> _requestValidator;
-        private readonly ITokenManager _tokenManager;
         private readonly IMapper _mapper;
+
+        protected override bool RequireAuthorizedUser => true;
 
         public UpdateUserOperationHandler(
             IUserRepository userRepository,
-            IValidator<UpdateUserRequest> requestValidator,
+            IEnumerable<IValidator<UpdateUserRequest>> requestValidators,
             ITokenManager tokenManager,
             IMapper mapper)
+            : base(requestValidators, userRepository, tokenManager, mapper)
         {
             _userRepository = userRepository;
-            _requestValidator = requestValidator;
-            _tokenManager = tokenManager;
             _mapper = mapper;
         }
         
-        public async Task<OperationResult<OperationSuccess>> HandleAsync(UpdateUserRequest updateRequest)
+        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
+            OperationParameters<UpdateUserRequest> parameters)
         {
-            try
+            if (parameters.Request.Id != parameters.CurrentUser.Id)
             {
-                var validationResult = await _requestValidator.ValidateAsync(updateRequest);
-                if (!validationResult.IsValid)
-                {
-                    var validationError = new ValidationError(validationResult);
-                    return new OperationResult<OperationSuccess>(validationError);
-                }
-
-                var authenticationResult = _tokenManager.AuthenticateToken(updateRequest.AuthenticationToken);
-                if (!authenticationResult.IsValid ||
-                    !await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
-                {
-                    var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
-                    return new OperationResult<OperationSuccess>(authenticationError);
-                }
-
-                if (updateRequest.Id != authenticationResult.UserId)
-                {
-                    var accessViolationError = new AccessViolationError("You can only edit your own profile.");
-                    return new OperationResult<OperationSuccess>(accessViolationError);
-                }
+                var accessViolationError = new AccessViolationError("You can only edit your own profile.");
+                return new OperationResult<BlankResource>(accessViolationError);
+            }
                 
-                if (!await _userRepository.UserExistsAsync(updateRequest.Id))
-                {
-                    var notFoundError = new NotFoundError("User not found.");
-                    return new OperationResult<OperationSuccess>(notFoundError);
-                }
-
-                var checkParameters = new UsernameAvailabilityCheckParameters(updateRequest.Username, updateRequest.Id);
-                if (!await _userRepository.UsernameIsAvailableAsync(checkParameters))
-                {
-                    var validationMessages = new Dictionary<string, string>
-                    {
-                        {nameof(updateRequest.Username), "Already taken."}
-                    };
-                    var validationError = new ValidationError(validationMessages);
-                    return new OperationResult<OperationSuccess>(validationError);
-                }
-
-                var updateData = _mapper.Map<UserUpdateData>(updateRequest);
-                await _userRepository.UpdateUserAsync(updateData);
-
-                return new OperationResult<OperationSuccess>(new OperationSuccess());
-            }
-            catch (Exception exception)
+            if (!await _userRepository.UserExistsAsync(parameters.Request.Id))
             {
-                var fatalError = new FatalError(exception);
-                return new OperationResult<OperationSuccess>(fatalError);
+                var notFoundError = new NotFoundError("User not found.");
+                return new OperationResult<BlankResource>(notFoundError);
             }
+
+            var usernameAvailabilityCheckParameters =
+                new UsernameAvailabilityCheckParameters(parameters.Request.Username, parameters.Request.Id);
+            if (!await _userRepository.UsernameIsAvailableAsync(usernameAvailabilityCheckParameters))
+            {
+                var validationMessages = new Dictionary<string, string>
+                {
+                    {nameof(parameters.Request.Username), "Already taken."}
+                };
+                var validationError = new ValidationError(validationMessages);
+                return new OperationResult<BlankResource>(validationError);
+            }
+
+            var updateData = _mapper.Map<UserUpdateData>(parameters.Request);
+            await _userRepository.UpdateUserAsync(updateData);
+
+            return new OperationResult<BlankResource>(new BlankResource());
         }
     }
 }
