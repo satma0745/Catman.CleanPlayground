@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.Token
 {
     using System;
     using System.Collections.Generic;
-    using Catman.CleanPlayground.JwtAuthentication.Token;
+    using Catman.CleanPlayground.JwtAuthentication.Session.Manager;
     using JWT.Builder;
 
     internal static class TokenBuilderExtensions

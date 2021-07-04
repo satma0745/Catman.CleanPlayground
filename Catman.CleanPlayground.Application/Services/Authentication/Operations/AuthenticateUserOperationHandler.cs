@@ -2,30 +2,28 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
+    using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 
     internal class AuthenticateUserOperationHandler : OperationHandlerBase<AuthenticateUserRequest, string>
     {
         private readonly IUserRepository _userRepository;
-        private readonly ITokenManager _tokenManager;
+        private readonly ISessionManager _sessionManager;
 
         public AuthenticateUserOperationHandler(
             IUserRepository userRepository,
             IEnumerable<IValidator<AuthenticateUserRequest>> requestValidators,
-            ITokenManager tokenManager,
-            IMapper mapper)
-            : base(requestValidators, userRepository, tokenManager, mapper)
+            ISessionManager sessionManager)
+            : base(requestValidators, sessionManager)
         {
             _userRepository = userRepository;
-            _tokenManager = tokenManager;
+            _sessionManager = sessionManager;
         }
         
         protected override async Task<OperationResult<string>> HandleRequestAsync(
@@ -48,8 +46,8 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
                 return new OperationResult<string>(validationError);
             }
 
-            var token = _tokenManager.GenerateToken(user.Id);
-            return new OperationResult<string>(token);
+            var authorizationToken = _sessionManager.GenerateAuthorizationToken(user.Id);
+            return new OperationResult<string>(authorizationToken);
         }
     }
 }

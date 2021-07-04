@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.JwtAuthentication.Token
+namespace Catman.CleanPlayground.JwtAuthentication.Configuration
 {
     using JWT.Algorithms;
 

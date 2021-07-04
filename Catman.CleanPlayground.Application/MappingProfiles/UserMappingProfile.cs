@@ -2,7 +2,6 @@ namespace Catman.CleanPlayground.Application.MappingProfiles
 {
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Users;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.Application.Services.Users.Resources;
 
@@ -13,8 +12,6 @@ namespace Catman.CleanPlayground.Application.MappingProfiles
             CreateMap<UserData, UserResource>();
             CreateMap<RegisterUserRequest, UserCreateData>();
             CreateMap<UpdateUserRequest, UserUpdateData>();
-
-            CreateMap<UserData, ApplicationUser>();
         }
     }
 }

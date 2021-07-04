@@ -2,14 +2,13 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 
     internal class DeleteUserOperationHandler : OperationHandlerBase<DeleteUserRequest, BlankResource>
@@ -21,9 +20,8 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         public DeleteUserOperationHandler(
             IUserRepository userRepository,
             IEnumerable<IValidator<DeleteUserRequest>> requestValidators,
-            ITokenManager tokenManager,
-            IMapper mapper)
-            : base(requestValidators, userRepository, tokenManager, mapper)
+            ISessionManager sessionManager)
+            : base(requestValidators, sessionManager)
         {
             _userRepository = userRepository;
         }
@@ -31,7 +29,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
             OperationParameters<DeleteUserRequest> parameters)
         {
-            if (parameters.Request.Id != parameters.CurrentUser.Id)
+            if (parameters.Request.Id != parameters.Session.CurrentUser.Id)
             {
                 var accessViolationError = new AccessViolationError("You can only delete your own profile.");
                 return new OperationResult<BlankResource>(accessViolationError);

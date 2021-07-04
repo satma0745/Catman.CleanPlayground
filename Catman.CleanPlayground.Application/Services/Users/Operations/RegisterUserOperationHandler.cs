@@ -3,13 +3,13 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 
     internal class RegisterUserOperationHandler : OperationHandlerBase<RegisterUserRequest, BlankResource>
@@ -20,9 +20,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         public RegisterUserOperationHandler(
             IEnumerable<IValidator<RegisterUserRequest>> requestValidators,
             IUserRepository userRepository,
-            ITokenManager tokenManager,
+            ISessionManager sessionManager,
             IMapper mapper)
-            : base(requestValidators, userRepository, tokenManager, mapper)
+            : base(requestValidators, sessionManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;

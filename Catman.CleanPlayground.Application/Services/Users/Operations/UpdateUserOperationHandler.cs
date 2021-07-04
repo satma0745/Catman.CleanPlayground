@@ -3,13 +3,13 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Authentication;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 
     internal class UpdateUserOperationHandler : OperationHandlerBase<UpdateUserRequest, BlankResource>
@@ -22,9 +22,9 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         public UpdateUserOperationHandler(
             IUserRepository userRepository,
             IEnumerable<IValidator<UpdateUserRequest>> requestValidators,
-            ITokenManager tokenManager,
+            ISessionManager sessionManager,
             IMapper mapper)
-            : base(requestValidators, userRepository, tokenManager, mapper)
+            : base(requestValidators, sessionManager)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -33,7 +33,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
             OperationParameters<UpdateUserRequest> parameters)
         {
-            if (parameters.Request.Id != parameters.CurrentUser.Id)
+            if (parameters.Request.Id != parameters.Session.CurrentUser.Id)
             {
                 var accessViolationError = new AccessViolationError("You can only edit your own profile.");
                 return new OperationResult<BlankResource>(accessViolationError);

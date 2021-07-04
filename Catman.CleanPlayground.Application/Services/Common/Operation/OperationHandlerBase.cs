@@ -3,12 +3,10 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Catman.CleanPlayground.Application.Authentication;
-    using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
+    using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
     using FluentValidation.Results;
 
@@ -16,22 +14,16 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
         where TRequest : RequestBase
     {
         private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
-        private readonly IUserRepository _userRepository;
-        private readonly ITokenManager _tokenManager;
-        private readonly IMapper _mapper;
+        private readonly ISessionManager _sessionManager;
         
         protected virtual bool RequireAuthorizedUser => false;
 
         protected OperationHandlerBase(
             IEnumerable<IValidator<TRequest>> requestValidators,
-            IUserRepository userRepository,
-            ITokenManager tokenManager,
-            IMapper mapper)
+            ISessionManager sessionManager)
         {
             _requestValidators = requestValidators;
-            _userRepository = userRepository;
-            _tokenManager = tokenManager;
-            _mapper = mapper;
+            _sessionManager = sessionManager;
         }
         
         public async Task<OperationResult<TResource>> PerformAsync(TRequest request)
@@ -45,30 +37,20 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
                     return new OperationResult<TResource>(validationError);
                 }
 
-                var authenticationResult = _tokenManager.AuthenticateToken(request.AuthorizationToken);
+                var authorizationToken = request.AuthorizationToken;
+                var sessionGenerationResult = await _sessionManager.RestoreSessionAsync(authorizationToken);
 
-                if (RequireAuthorizedUser)
+                if (!sessionGenerationResult.Success && RequireAuthorizedUser)
                 {
-                    if (!authenticationResult.IsValid)
-                    {
-                        var authenticationError = new AuthenticationError(authenticationResult.ErrorMessage);
-                        return new OperationResult<TResource>(authenticationError);
-                    }
-                    else if (!await _userRepository.UserExistsAsync(authenticationResult.UserId!.Value))
-                    {
-                        var authenticationError = new AuthenticationError("Token owner does not exist.");
-                        return new OperationResult<TResource>(authenticationError);
-                    }
+                    var authenticationError = new AuthenticationError(sessionGenerationResult.ValidationError);
+                    return new OperationResult<TResource>(authenticationError);
                 }
 
-                var (userExists, currentUser) = await TryGetApplicationUserAsync(authenticationResult.UserId);
                 var operationParams = new OperationParameters<TRequest>
                 {
-                    Authorized = userExists,
-                    CurrentUser = currentUser,
+                    Session = sessionGenerationResult.Session,
                     Request = request
                 };
-
                 return await HandleRequestAsync(operationParams);
             }
             catch (Exception exception)
@@ -94,19 +76,6 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation
 
             var validationPassed = new ValidationResult();
             return validationPassed;
-        }
-
-        private async Task<(bool UserExists, ApplicationUser User)> TryGetApplicationUserAsync(Guid? userId)
-        {
-            var userExists = userId is not null && await _userRepository.UserExistsAsync(userId.Value);
-            if (!userExists)
-            {
-                return (false, default);
-            }
-
-            var userData = await _userRepository.GetUserAsync(userId.Value);
-            var applicationUser = _mapper.Map<ApplicationUser>(userData);
-            return (true, applicationUser);
         }
     }
 }
