@@ -9,9 +9,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.Extensions.Services;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
     [Route("/api/auth")]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : ApiControllerBase
     {
         private readonly IAuthenticationService _authService;
         private readonly IMapper _mapper;
@@ -31,7 +30,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     error => error switch
                     {
                         AuthenticationError => Unauthorized(),
-                        _ => (IActionResult) StatusCode(500)
+                        _ => InternalServerError()
                     });
 
         [HttpPost]
@@ -44,7 +43,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     {
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
                         NotFoundError => NotFound(),
-                        _ => StatusCode(500)
+                        _ => InternalServerError()
                     });
     }
 }

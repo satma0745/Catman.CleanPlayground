@@ -11,9 +11,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.Extensions.Services;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
     [Route("/api/users")]
-    public class UserController : ControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -30,7 +29,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 .GetUsersAsync()
                 .SelectActionResultAsync(
                     users => Ok(_mapper.Map<ICollection<UserDto>>(users)),
-                    _ => StatusCode(500));
+                    _ => InternalServerError());
 
         [HttpPost("register")]
         public Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto) =>
@@ -41,7 +40,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     error => error switch
                     {
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                        _ => StatusCode(500)
+                        _ => InternalServerError()
                     });
 
         [HttpPost("{id:guid}/update")]
@@ -61,9 +60,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     {
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
                         AuthenticationError => Unauthorized(),
-                        AccessViolationError => StatusCode(403),
+                        AccessViolationError => Forbidden(),
                         NotFoundError => NotFound(),
-                        _ => StatusCode(500)
+                        _ => InternalServerError()
                     });
         }
 
@@ -78,8 +77,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
                         NotFoundError => NotFound(),
                         AuthenticationError => Unauthorized(),
-                        AccessViolationError => StatusCode(403),
-                        _ => StatusCode(500)
+                        AccessViolationError => Forbidden(),
+                        _ => InternalServerError()
                     });
     }
 }
