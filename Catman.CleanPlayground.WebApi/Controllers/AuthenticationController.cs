@@ -29,6 +29,21 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization)
+        {
+            var currentUserRequest = new GetCurrentUserRequest(authorization);
+            
+            var operationResult = await _authService.GetCurrentUserAsync(currentUserRequest);
+            return operationResult.Select(
+                onSuccess: user => Ok(_mapper.Map<CurrentUserDto>(user)),
+                onFailure: error => error switch
+                {
+                    AuthenticationError => Unauthorized(),
+                    _ => (IActionResult) StatusCode(500)
+                });
+        }
+
         [HttpPost]
         public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto)
         {

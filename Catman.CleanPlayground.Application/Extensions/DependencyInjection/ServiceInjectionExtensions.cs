@@ -4,6 +4,7 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     using Catman.CleanPlayground.Application.Services.Authentication;
     using Catman.CleanPlayground.Application.Services.Authentication.Operations;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
+    using Catman.CleanPlayground.Application.Services.Authentication.Resources;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Users;
@@ -30,6 +31,7 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
         private static IServiceCollection AddAuthenticationService(this IServiceCollection services) =>
             services
                 .AddScoped<IAuthenticationService, AuthenticationService>()
-                .AddScoped<IOperation<AuthenticateUserRequest, string>, AuthenticateUserOperationHandler>();
+                .AddScoped<IOperation<AuthenticateUserRequest, string>, AuthenticateUserOperationHandler>()
+                .AddScoped<IOperation<GetCurrentUserRequest, CurrentUserResource>, GetCurrentUserOperationHandler>();
     }
 }
