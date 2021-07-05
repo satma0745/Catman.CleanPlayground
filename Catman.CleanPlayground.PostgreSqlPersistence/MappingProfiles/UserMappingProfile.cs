@@ -11,10 +11,18 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.MappingProfiles
             CreateMap<UserEntity, UserData>();
             
             CreateMap<UserCreateData, UserEntity>()
-                .ForMember(entity => entity.Password, options => options.Ignore());
+                .ForMember(entity => entity.Password, options => options.MapFrom(data => new UserPassword
+                {
+                    Hash = data.PasswordHash,
+                    Salt = data.PasswordSalt
+                }));
             
             CreateMap<UserUpdateData, UserEntity>()
-                .ForMember(entity => entity.Password, options => options.Ignore());
+                .ForMember(entity => entity.Password, options => options.MapFrom(data => new UserPassword
+                {
+                    Hash = data.PasswordHash,
+                    Salt = data.PasswordSalt
+                }));
         }
     }
 }

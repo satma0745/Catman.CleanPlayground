@@ -8,7 +8,6 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.PostgreSqlPersistence.Context;
     using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
-    using Catman.CleanPlayground.PostgreSqlPersistence.Helpers;
     using Microsoft.EntityFrameworkCore;
 
     internal class UserRepository : IUserRepository
@@ -38,13 +37,13 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
                 .Where(user => user.Id != checkParameters.ExceptUserWithId)
                 .AllAsync(user => user.Username != checkParameters.Username);
 
-        public async Task<bool> UserHasPasswordAsync(Guid userId, string password)
+        public async Task<bool> UserHasPasswordAsync(Guid userId, string passwordHash)
         {
             var userEntity = await _context.Users
                 .AsNoTracking()
                 .SingleAsync(user => user.Id == userId);
             
-            return PasswordHelper.VerifyPassword(userEntity.Password, password);
+            return userEntity.Password.Hash == passwordHash;
         }
 
         public async Task<UserData> GetUserAsync(Guid userId)
@@ -77,8 +76,6 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
         public async Task CreateUserAsync(UserCreateData createData)
         {
             var user = _mapper.Map<UserEntity>(createData);
-            user.Id = Guid.NewGuid();
-            user.Password = PasswordHelper.HashPassword(createData.Password);
             
             _context.Users.Add(user);
             
@@ -90,7 +87,6 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
             var userToUpdate = await _context.Users.SingleAsync(user => user.Id == updateData.Id);
             
             _mapper.Map(updateData, userToUpdate);
-            userToUpdate.Password = PasswordHelper.HashPassword(updateData.Password);
             
             await _context.SaveChangesAsync();
         }

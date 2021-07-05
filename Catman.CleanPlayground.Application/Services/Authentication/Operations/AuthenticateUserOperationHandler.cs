@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.Users;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
@@ -14,15 +15,18 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     {
         private readonly IUserRepository _userRepository;
         private readonly ISessionManager _sessionManager;
+        private readonly IPasswordHelper _passwordHelper;
 
         public AuthenticateUserOperationHandler(
             IUserRepository userRepository,
             IEnumerable<IValidator<AuthenticateUserRequest>> requestValidators,
-            ISessionManager sessionManager)
+            ISessionManager sessionManager,
+            IPasswordHelper passwordHelper)
             : base(requestValidators, sessionManager)
         {
             _userRepository = userRepository;
             _sessionManager = sessionManager;
+            _passwordHelper = passwordHelper;
         }
         
         protected override async Task<OperationResult<string>> HandleRequestAsync(
@@ -34,7 +38,9 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
             }
 
             var user = await _userRepository.GetUserAsync(parameters.Request.Username);
-            if (!await _userRepository.UserHasPasswordAsync(user.Id, parameters.Request.Password))
+
+            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password, user.PasswordSalt);
+            if (user.PasswordHash != hashedPassword)
             {
                 return ValidationFailed(nameof(parameters.Request.Password), "Incorrect password.");
             }
