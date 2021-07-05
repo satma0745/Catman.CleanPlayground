@@ -6,7 +6,7 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
     {
         public static void AddWebApi(this IServiceCollection services) =>
             services
-                .AddValidators()
-                .AddControllers();
+                .AddControllers()
+                .AddValidation();
     }
 }

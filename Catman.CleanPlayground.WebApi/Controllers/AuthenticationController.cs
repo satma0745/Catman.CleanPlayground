@@ -2,13 +2,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Authentication;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
     using Catman.CleanPlayground.WebApi.Extensions.Services;
-    using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -16,16 +14,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
-        private readonly IValidator<UserCredentialsDto> _credentialsDtoValidator;
         private readonly IMapper _mapper;
 
-        public AuthenticationController(
-            IAuthenticationService authService,
-            IValidator<UserCredentialsDto> credentialsDtoValidator,
-            IMapper mapper)
+        public AuthenticationController(IAuthenticationService authService, IMapper mapper)
         {
             _authService = authService;
-            _credentialsDtoValidator = credentialsDtoValidator;
             _mapper = mapper;
         }
 
@@ -42,15 +35,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     });
 
         [HttpPost]
-        public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto)
-        {
-            var validationResult = _credentialsDtoValidator.Validate(credentialsDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.GetValidationErrors());
-            }
-
-            return await _authService
+        public Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto) =>
+            _authService
                 .AuthenticateUserAsync(_mapper.Map<AuthenticateUserRequest>(credentialsDto))
                 .SelectActionResultAsync(
                     Ok,
@@ -60,6 +46,5 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         NotFoundError => NotFound(),
                         _ => StatusCode(500)
                     });
-        }
     }
 }

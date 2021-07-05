@@ -4,13 +4,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using Catman.CleanPlayground.WebApi.Extensions.Services;
-    using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -18,23 +16,11 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        private readonly IValidator<RegisterUserDto> _registerDtoValidator;
-        private readonly IValidator<UpdateUserDto> _updateDtoValidator;
-        
         private readonly IMapper _mapper;
 
-        public UserController(
-            IUserService userService,
-            IValidator<RegisterUserDto> registerDtoValidator,
-            IValidator<UpdateUserDto> updateDtoValidator,
-            IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
-
-            _registerDtoValidator = registerDtoValidator;
-            _updateDtoValidator = updateDtoValidator;
-            
             _mapper = mapper;
         }
 
@@ -47,15 +33,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     _ => StatusCode(500));
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto)
-        {
-            var validationResult = await _registerDtoValidator.ValidateAsync(registerDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.GetValidationErrors());
-            }
-            
-            return await _userService
+        public Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto) =>
+            _userService
                 .RegisterUserAsync(_mapper.Map<RegisterUserRequest>(registerDto))
                 .SelectActionResultAsync(
                     () => Ok(),
@@ -64,7 +43,6 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
                         _ => StatusCode(500)
                     });
-        }
 
         [HttpPost("{id:guid}/update")]
         public async Task<IActionResult> UpdateUserAsync(
@@ -72,12 +50,6 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             [FromHeader] string authorization,
             [FromBody] UpdateUserDto updateDto)
         {
-            var validationResult = await _updateDtoValidator.ValidateAsync(updateDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.GetValidationErrors());
-            }
-
             var updateRequest = new UpdateUserRequest(id, authorization);
             _mapper.Map(updateDto, updateRequest);
             
