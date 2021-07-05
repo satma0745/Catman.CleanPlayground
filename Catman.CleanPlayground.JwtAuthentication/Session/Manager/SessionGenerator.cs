@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Persistence.Repositories;
+    using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.JwtAuthentication.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.Token;
@@ -11,17 +11,17 @@ namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
 
     internal class SessionGenerator
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
         private readonly JwtBuilder _jwtBuilder;
 
         public SessionGenerator(
             JwtAuthenticationConfiguration configuration,
-            IUserRepository userRepository,
+            IUnitOfWork work,
             IMapper mapper)
         {
-            _userRepository = userRepository;
+            _work = work;
             _mapper = mapper;
             
             _jwtBuilder = JwtBuilder.Create()
@@ -40,12 +40,12 @@ namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
                 }
                 
                 var tokenPayload = _jwtBuilder.GetPayload(authorizationToken);
-                if (!await _userRepository.UserExistsAsync(tokenPayload.UserId))
+                if (!await _work.Users.UserExistsAsync(tokenPayload.UserId))
                 {
                     return SessionGenerationResult.ValidationFailed("Authorization token owner does not exist.");
                 }
 
-                var userData = await _userRepository.GetUserAsync(tokenPayload.UserId);
+                var userData = await _work.Users.GetUserAsync(tokenPayload.UserId);
                 var applicationUser = _mapper.Map<ApplicationUser>(userData);
 
                 var session = new SessionInfo(applicationUser);

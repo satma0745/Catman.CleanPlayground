@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Persistence.Repositories;
+    using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -12,17 +12,17 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
 
     internal class DeleteUserOperationHandler : OperationHandlerBase<DeleteUserRequest, BlankResource>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _work;
 
         protected override bool RequireAuthorizedUser => true;
 
         public DeleteUserOperationHandler(
-            IUserRepository userRepository,
             IEnumerable<IValidator<DeleteUserRequest>> requestValidators,
-            ISessionManager sessionManager)
+            ISessionManager sessionManager,
+            IUnitOfWork unitOfWork)
             : base(requestValidators, sessionManager)
         {
-            _userRepository = userRepository;
+            _work = unitOfWork;
         }
 
         protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
@@ -33,12 +33,16 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 return AccessViolation("You can only delete your own profile.");
             }
             
-            if (!await _userRepository.UserExistsAsync(parameters.Request.Id))
+            if (!await _work.Users.UserExistsAsync(parameters.Request.Id))
             {
                 return NotFound("User not found.");
             }
             
-            await _userRepository.RemoveUserAsync(parameters.Request.Id);
+            var user = await _work.Users.GetUserAsync(parameters.Request.Id);
+            await _work.Users.RemoveUserAsync(user);
+
+            await _work.SaveAsync();
+            
             return Success();
         }
     }

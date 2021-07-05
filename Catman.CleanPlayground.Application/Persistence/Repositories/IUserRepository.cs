@@ -21,8 +21,6 @@ namespace Catman.CleanPlayground.Application.Persistence.Repositories
 
         Task CreateUserAsync(UserEntity user);
 
-        Task UpdateUserAsync(UserEntity updatedUser);
-
-        Task RemoveUserAsync(Guid userId);
+        Task RemoveUserAsync(UserEntity user);
     }
 }

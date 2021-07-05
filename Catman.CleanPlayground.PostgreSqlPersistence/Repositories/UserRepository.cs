@@ -34,30 +34,14 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
                 .Where(user => user.Id != userIdToExclude)
                 .AllAsync(user => user.Username != username);
 
-        public async Task<bool> UserHasPasswordAsync(Guid userId, string passwordHash)
-        {
-            var userEntity = await _context.Users
-                .AsNoTracking()
-                .SingleAsync(user => user.Id == userId);
-            
-            return userEntity.Password.Hash == passwordHash;
-        }
-
         public Task<UserEntity> GetUserAsync(Guid userId) =>
-            _context.Users
-                .AsNoTracking()
-                .SingleAsync(user => user.Id == userId);
+            _context.Users.SingleAsync(user => user.Id == userId);
 
         public Task<UserEntity> GetUserAsync(string username) =>
-            _context.Users
-                .AsNoTracking()
-                .SingleAsync(user => user.Username == username);
+            _context.Users.SingleAsync(user => user.Username == username);
 
-        public async Task<ICollection<UserEntity>> GetUsersAsync()
-        {
-            var userEntities = _context.Users.AsNoTracking();
-            return await userEntities.ToListAsync();
-        }
+        public async Task<ICollection<UserEntity>> GetUsersAsync() =>
+            await _context.Users.ToListAsync();
 
         public Task CreateUserAsync(UserEntity user)
         {
@@ -65,21 +49,10 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
             return _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(UserEntity updatedUser)
+        public Task RemoveUserAsync(UserEntity user)
         {
-            _context.Users.Update(updatedUser);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveUserAsync(Guid userId)
-        {
-            var userToDelete = await _context.Users
-                .AsNoTracking()
-                .SingleAsync(user => user.Id == userId);
-            
-            _context.Users.Remove(userToDelete);
-
-            await _context.SaveChangesAsync();
+            _context.Users.Remove(user);
+            return _context.SaveChangesAsync();
         }
     }
 }

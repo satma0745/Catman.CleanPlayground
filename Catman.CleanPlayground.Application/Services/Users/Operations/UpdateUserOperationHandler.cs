@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Persistence.Repositories;
+    using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -14,23 +14,23 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
 
     internal class UpdateUserOperationHandler : OperationHandlerBase<UpdateUserRequest, BlankResource>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IPasswordHelper _passwordHelper;
+        private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
         protected override bool RequireAuthorizedUser => true;
 
         public UpdateUserOperationHandler(
-            IUserRepository userRepository,
             IEnumerable<IValidator<UpdateUserRequest>> requestValidators,
             IPasswordHelper passwordHelper,
             ISessionManager sessionManager,
+            IUnitOfWork unitOfWork,
             IMapper mapper)
             : base(requestValidators, sessionManager)
         {
-            _userRepository = userRepository;
             _passwordHelper = passwordHelper;
             _mapper = mapper;
+            _work = unitOfWork;
         }
         
         protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
@@ -41,22 +41,22 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 return AccessViolation("You can only edit your own profile.");
             }
                 
-            if (!await _userRepository.UserExistsAsync(parameters.Request.Id))
+            if (!await _work.Users.UserExistsAsync(parameters.Request.Id))
             {
                 return NotFound("User not found.");
             }
 
-            if (!await _userRepository.UsernameIsAvailableAsync(parameters.Request.Username, parameters.Request.Id))
+            if (!await _work.Users.UsernameIsAvailableAsync(parameters.Request.Username, parameters.Request.Id))
             {
                 return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
             }
 
-            var user = await _userRepository.GetUserAsync(parameters.Request.Id);
+            var user = await _work.Users.GetUserAsync(parameters.Request.Id);
 
             _mapper.Map(parameters.Request, user);
             user.Password = _passwordHelper.HashPassword(parameters.Request.Password);
             
-            await _userRepository.UpdateUserAsync(user);
+            await _work.SaveAsync();
 
             return Success();
         }
