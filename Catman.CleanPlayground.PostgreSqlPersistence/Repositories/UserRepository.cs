@@ -4,21 +4,18 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.PostgreSqlPersistence.Context;
-    using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
     using Microsoft.EntityFrameworkCore;
 
     internal class UserRepository : IUserRepository
     {
         private readonly DatabaseContext _context;
-        private readonly IMapper _mapper;
 
-        public UserRepository(DatabaseContext context, IMapper mapper)
+        public UserRepository(DatabaseContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public Task<bool> UserExistsAsync(Guid userId) =>
@@ -31,11 +28,11 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
                 .AsNoTracking()
                 .AnyAsync(user => user.Username == username);
         
-        public Task<bool> UsernameIsAvailableAsync(UsernameAvailabilityCheckParameters checkParameters) =>
+        public Task<bool> UsernameIsAvailableAsync(string username, Guid? userIdToExclude) =>
             _context.Users
                 .AsNoTracking()
-                .Where(user => user.Id != checkParameters.ExceptUserWithId)
-                .AllAsync(user => user.Username != checkParameters.Username);
+                .Where(user => user.Id != userIdToExclude)
+                .AllAsync(user => user.Username != username);
 
         public async Task<bool> UserHasPasswordAsync(Guid userId, string passwordHash)
         {
@@ -46,48 +43,31 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
             return userEntity.Password.Hash == passwordHash;
         }
 
-        public async Task<UserData> GetUserAsync(Guid userId)
-        {
-            var userEntity = await _context.Users
+        public Task<UserEntity> GetUserAsync(Guid userId) =>
+            _context.Users
                 .AsNoTracking()
                 .SingleAsync(user => user.Id == userId);
-            
-            return _mapper.Map<UserData>(userEntity);
-        }
 
-        public async Task<UserData> GetUserAsync(string username)
-        {
-            var userEntity = await _context.Users
+        public Task<UserEntity> GetUserAsync(string username) =>
+            _context.Users
                 .AsNoTracking()
                 .SingleAsync(user => user.Username == username);
-            
-            return _mapper.Map<UserData>(userEntity);
+
+        public async Task<ICollection<UserEntity>> GetUsersAsync()
+        {
+            var userEntities = _context.Users.AsNoTracking();
+            return await userEntities.ToListAsync();
         }
 
-        public async Task<ICollection<UserData>> GetUsersAsync()
+        public Task CreateUserAsync(UserEntity user)
         {
-            var userEntities = await _context.Users
-                .AsNoTracking()
-                .ToListAsync();
-            
-            return _mapper.Map<ICollection<UserData>>(userEntities);
-        }
-
-        public async Task CreateUserAsync(UserCreateData createData)
-        {
-            var user = _mapper.Map<UserEntity>(createData);
-            
             _context.Users.Add(user);
-            
-            await _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(UserUpdateData updateData)
+        public async Task UpdateUserAsync(UserEntity updatedUser)
         {
-            var userToUpdate = await _context.Users.SingleAsync(user => user.Id == updateData.Id);
-            
-            _mapper.Map(updateData, userToUpdate);
-            
+            _context.Users.Update(updatedUser);
             await _context.SaveChangesAsync();
         }
 

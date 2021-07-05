@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.PostgreSqlPersistence.Context
 {
     using System.Reflection;
-    using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
     using Microsoft.EntityFrameworkCore;
 
     internal class DatabaseContext : DbContext

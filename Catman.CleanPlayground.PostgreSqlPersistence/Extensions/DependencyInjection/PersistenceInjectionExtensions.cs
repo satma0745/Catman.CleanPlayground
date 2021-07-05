@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.PostgreSqlPersistence.Extensions.DependencyInjection
 {
     using System.Reflection;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.PostgreSqlPersistence.Context;
     using Catman.CleanPlayground.PostgreSqlPersistence.Extensions.Configuration;
     using Catman.CleanPlayground.PostgreSqlPersistence.Repositories;

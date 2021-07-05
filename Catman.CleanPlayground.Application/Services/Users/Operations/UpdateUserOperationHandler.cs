@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -46,19 +46,17 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
                 return NotFound("User not found.");
             }
 
-            var usernameAvailabilityCheckParameters =
-                new UsernameAvailabilityCheckParameters(parameters.Request.Username, parameters.Request.Id);
-            if (!await _userRepository.UsernameIsAvailableAsync(usernameAvailabilityCheckParameters))
+            if (!await _userRepository.UsernameIsAvailableAsync(parameters.Request.Username, parameters.Request.Id))
             {
                 return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
             }
 
-            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password);
+            var user = await _userRepository.GetUserAsync(parameters.Request.Id);
 
-            var updateData = _mapper.Map<UserUpdateData>(parameters.Request);
-            (updateData.PasswordHash, updateData.PasswordSalt) = hashedPassword;
+            _mapper.Map(parameters.Request, user);
+            user.Password = _passwordHelper.HashPassword(parameters.Request.Password);
             
-            await _userRepository.UpdateUserAsync(updateData);
+            await _userRepository.UpdateUserAsync(user);
 
             return Success();
         }

@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.Application.MappingProfiles
 {
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.Application.Services.Users.Resources;
 
@@ -9,9 +9,13 @@ namespace Catman.CleanPlayground.Application.MappingProfiles
     {
         public UserMappingProfile()
         {
-            CreateMap<UserData, UserResource>();
-            CreateMap<RegisterUserRequest, UserCreateData>();
-            CreateMap<UpdateUserRequest, UserUpdateData>();
+            CreateMap<UserEntity, UserResource>();
+            
+            CreateMap<RegisterUserRequest, UserEntity>()
+                .ForMember(entity => entity.Password, options => options.Ignore());
+            
+            CreateMap<UpdateUserRequest, UserEntity>()
+                .ForMember(entity => entity.Password, options => options.Ignore());
         }
     }
 }

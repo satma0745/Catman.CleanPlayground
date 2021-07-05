@@ -3,7 +3,7 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
@@ -39,8 +39,8 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
 
             var user = await _userRepository.GetUserAsync(parameters.Request.Username);
 
-            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password, user.PasswordSalt);
-            if (user.PasswordHash != hashedPassword)
+            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password, user.Password.Hash);
+            if (user.Password.Hash != hashedPassword)
             {
                 return ValidationFailed(nameof(parameters.Request.Password), "Incorrect password.");
             }

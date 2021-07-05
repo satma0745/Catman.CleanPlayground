@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.JwtAuthentication.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.Token;

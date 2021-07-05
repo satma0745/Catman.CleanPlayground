@@ -1,6 +1,6 @@
 namespace Catman.CleanPlayground.PostgreSqlPersistence.EntityConfigurations
 {
-    using Catman.CleanPlayground.PostgreSqlPersistence.Entities;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -30,7 +30,7 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.EntityConfigurations
             builder.Navigation(user => user.Password).IsRequired();
         }
 
-        private static void ConfigurePassword(OwnedNavigationBuilder<UserEntity, UserPassword> builder)
+        private static void ConfigurePassword(OwnedNavigationBuilder<UserEntity, UserEntity.UserPassword> builder)
         {
             builder
                 .Property(password => password.Hash)

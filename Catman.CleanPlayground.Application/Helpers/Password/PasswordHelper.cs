@@ -1,19 +1,24 @@
 namespace Catman.CleanPlayground.Application.Helpers.Password
 {
     using BCrypt.Net;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
 
     internal class PasswordHelper : IPasswordHelper
     {
-        public (string Hash, string Salt) HashPassword(string rawPassword) =>
+        public UserEntity.UserPassword HashPassword(string rawPassword) =>
             HashPasswordUsingSalt(rawPassword, BCrypt.GenerateSalt());
 
         public string HashPassword(string rawPassword, string salt) =>
             HashPasswordUsingSalt(rawPassword, salt).Hash;
 
-        public bool IsSamePassword((string Hash, string Salt) password, string rawPassword) =>
+        public bool IsSamePassword(UserEntity.UserPassword password, string rawPassword) =>
             HashPassword(rawPassword, password.Salt) == password.Hash;
         
-        private static (string Hash, string Salt) HashPasswordUsingSalt(string rawPassword, string salt) =>
-            (BCrypt.HashPassword(rawPassword, salt), salt);
+        private static UserEntity.UserPassword HashPasswordUsingSalt(string rawPassword, string salt) =>
+            new UserEntity.UserPassword
+            {
+                Hash = BCrypt.HashPassword(rawPassword, salt),
+                Salt = salt
+            };
     }
 }

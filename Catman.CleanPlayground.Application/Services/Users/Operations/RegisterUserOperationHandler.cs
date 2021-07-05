@@ -4,7 +4,8 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Entities;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -34,18 +35,15 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
             OperationParameters<RegisterUserRequest> parameters)
         {
-            var checkParams = new UsernameAvailabilityCheckParameters(parameters.Request.Username);
-            if (!await _userRepository.UsernameIsAvailableAsync(checkParams))
+            if (!await _userRepository.UsernameIsAvailableAsync(parameters.Request.Username))
             {
                 return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
             }
             
-            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password);
+            var user = _mapper.Map<UserEntity>(parameters.Request);
+            user.Password = _passwordHelper.HashPassword(parameters.Request.Password);
 
-            var createData = _mapper.Map<UserCreateData>(parameters.Request);
-            (createData.PasswordHash, createData.PasswordSalt) = hashedPassword;
-            
-            await _userRepository.CreateUserAsync(createData);
+            await _userRepository.CreateUserAsync(user);
 
             return Success();
         }

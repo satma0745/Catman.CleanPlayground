@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;

@@ -3,7 +3,7 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Persistence.Users;
+    using Catman.CleanPlayground.Application.Persistence.Repositories;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
@@ -31,8 +31,8 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
         protected override async Task<OperationResult<ICollection<UserResource>>> HandleRequestAsync(
             OperationParameters<GetUsersRequest> _)
         {
-            var usersData = await _userRepository.GetUsersAsync();
-            var users = _mapper.Map<ICollection<UserResource>>(usersData);
+            var userEntities = await _userRepository.GetUsersAsync();
+            var users = _mapper.Map<ICollection<UserResource>>(userEntities);
             return Success(users);
         }
     }
