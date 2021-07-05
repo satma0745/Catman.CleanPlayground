@@ -2,12 +2,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Extensions.Services;
     using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Authentication;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
+    using Catman.CleanPlayground.WebApi.Extensions.Services;
     using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
@@ -30,40 +30,36 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization)
-        {
-            var currentUserRequest = new GetCurrentUserRequest(authorization);
-            
-            var operationResult = await _authService.GetCurrentUserAsync(currentUserRequest);
-            return operationResult.Select(
-                onSuccess: user => Ok(_mapper.Map<CurrentUserDto>(user)),
-                onFailure: error => error switch
-                {
-                    AuthenticationError => Unauthorized(),
-                    _ => (IActionResult) StatusCode(500)
-                });
-        }
+        public Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization) =>
+            _authService
+                .GetCurrentUserAsync(new GetCurrentUserRequest(authorization))
+                .SelectActionResultAsync(
+                    user => Ok(_mapper.Map<CurrentUserDto>(user)),
+                    error => error switch
+                    {
+                        AuthenticationError => Unauthorized(),
+                        _ => (IActionResult) StatusCode(500)
+                    });
 
         [HttpPost]
         public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto)
         {
-            var validationResult = await _credentialsDtoValidator.ValidateAsync(credentialsDto);
+            var validationResult = _credentialsDtoValidator.Validate(credentialsDto);
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.GetValidationErrors());
             }
-            
-            var authenticateRequest = _mapper.Map<AuthenticateUserRequest>(credentialsDto);
-            var operationResult = await _authService.AuthenticateUserAsync(authenticateRequest);
-            
-            return operationResult.Select(
-                onSuccess: Ok,
-                onFailure: error => error switch
-                {
-                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                    NotFoundError => NotFound(),
-                    _ => (IActionResult) StatusCode(500)
-                });
+
+            return await _authService
+                .AuthenticateUserAsync(_mapper.Map<AuthenticateUserRequest>(credentialsDto))
+                .SelectActionResultAsync(
+                    Ok,
+                    error => error switch
+                    {
+                        ValidationError validationError => BadRequest(validationError.ValidationErrors),
+                        NotFoundError => NotFound(),
+                        _ => StatusCode(500)
+                    });
         }
     }
 }

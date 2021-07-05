@@ -4,12 +4,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Extensions.Services;
     using Catman.CleanPlayground.Application.Extensions.Validation;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
+    using Catman.CleanPlayground.WebApi.Extensions.Services;
     using FluentValidation;
     using Microsoft.AspNetCore.Mvc;
 
@@ -39,13 +39,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync()
-        {
-            var operationResult = await _userService.GetUsersAsync();
-            return operationResult.Select(
-                onSuccess: users => Ok(_mapper.Map<ICollection<UserDto>>(users)),
-                onFailure: _ => (IActionResult) StatusCode(500));
-        }
+        public Task<IActionResult> GetUsersAsync() =>
+            _userService
+                .GetUsersAsync()
+                .SelectActionResultAsync(
+                    users => Ok(_mapper.Map<ICollection<UserDto>>(users)),
+                    _ => StatusCode(500));
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto)
@@ -56,16 +55,15 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                 return BadRequest(validationResult.GetValidationErrors());
             }
             
-            var registerRequest = _mapper.Map<RegisterUserRequest>(registerDto);
-            
-            var operationResult = await _userService.RegisterUserAsync(registerRequest);
-            return operationResult.Select(
-                onSuccess: () => Ok(),
-                onFailure: error => error switch
-                {                  
-                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                    _ => (IActionResult) StatusCode(500)
-                });
+            return await _userService
+                .RegisterUserAsync(_mapper.Map<RegisterUserRequest>(registerDto))
+                .SelectActionResultAsync(
+                    () => Ok(),
+                    error => error switch
+                    {
+                        ValidationError validationError => BadRequest(validationError.ValidationErrors),
+                        _ => StatusCode(500)
+                    });
         }
 
         [HttpPost("{id:guid}/update")]
@@ -83,35 +81,33 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             var updateRequest = new UpdateUserRequest(id, authorization);
             _mapper.Map(updateDto, updateRequest);
             
-            var operationResult = await _userService.UpdateUserAsync(updateRequest);
-            return operationResult.Select(
-                onSuccess: () => Ok(),
-                onFailure: error => error switch
-                {
-                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                    AuthenticationError => Unauthorized(),
-                    AccessViolationError => StatusCode(403),
-                    NotFoundError => NotFound(),
-                    _ => (IActionResult) StatusCode(500)
-                });
+            return await _userService
+                .UpdateUserAsync(updateRequest)
+                .SelectActionResultAsync(
+                    () => Ok(),
+                    error => error switch
+                    {
+                        ValidationError validationError => BadRequest(validationError.ValidationErrors),
+                        AuthenticationError => Unauthorized(),
+                        AccessViolationError => StatusCode(403),
+                        NotFoundError => NotFound(),
+                        _ => StatusCode(500)
+                    });
         }
 
         [HttpGet("{userId:guid}/delete")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization)
-        {
-            var deleteRequest = new DeleteUserRequest(userId, authorization);
-            
-            var operationResult = await _userService.DeleteUserAsync(deleteRequest);
-            return operationResult.Select(
-                onSuccess: () => Ok(),
-                onFailure: error => error switch
-                {
-                    ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                    NotFoundError => NotFound(),
-                    AuthenticationError => Unauthorized(),
-                    AccessViolationError => StatusCode(403),
-                    _ => (IActionResult) StatusCode(500)
-                });
-        }
+        public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization) =>
+            _userService
+                .DeleteUserAsync(new DeleteUserRequest(userId, authorization))
+                .SelectActionResultAsync(
+                    () => Ok(),
+                    error => error switch
+                    {
+                        ValidationError validationError => BadRequest(validationError.ValidationErrors),
+                        NotFoundError => NotFound(),
+                        AuthenticationError => Unauthorized(),
+                        AccessViolationError => StatusCode(403),
+                        _ => StatusCode(500)
+                    });
     }
 }
