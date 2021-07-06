@@ -5,31 +5,7 @@ namespace Catman.CleanPlayground.Application.Extensions.Reflection
 
     internal static class ReflectionExtensions
     {
-        public static bool Inherits(this Type type, Type possibleBaseType)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            
-            while (true)
-            {
-                var currentTypeDefinition = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
-                if (currentTypeDefinition == possibleBaseType)
-                {
-                    return true;
-                }
-
-                if (type.BaseType is null)
-                {
-                    return false;
-                }
-                type = type.BaseType;
-                
-            }
-        }
-
-        public static Type GetImplementedGenericInterface(this Type type, Type genericInterfaceTypeDefinition)
+        public static bool ImplementsGenericInterface(this Type type, Type interfaceGenericTypeDefinition)
         {
             if (type is null)
             {
@@ -38,7 +14,20 @@ namespace Catman.CleanPlayground.Application.Extensions.Reflection
 
             return type
                 .GetInterfaces()
-                .First(implemented => genericInterfaceTypeDefinition == implemented.GetGenericTypeDefinition());
+                .Any(@interface => @interface.IsGenericType &&
+                                   @interface.GetGenericTypeDefinition() == interfaceGenericTypeDefinition);
+        }
+
+        public static Type GetImplementedGenericInterface(this Type type, Type interfaceGenericTypeDefinition)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type
+                .GetInterfaces()
+                .First(@interface => interfaceGenericTypeDefinition == @interface.GetGenericTypeDefinition());
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
             _work = unitOfWork;
         }
         
-        protected override async Task<Response<BlankResource>> HandleRequestAsync(UpdateUserRequest request)
+        protected override async Task<Response<BlankResource>> HandleAsync(UpdateUserRequest request)
         {
             if (request.Id != Session.CurrentUser.Id)
             {

@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.WebApi.Extensions.Services
+namespace Catman.CleanPlayground.WebApi.Extensions.UseCases
 {
     using System;
     using System.Threading.Tasks;

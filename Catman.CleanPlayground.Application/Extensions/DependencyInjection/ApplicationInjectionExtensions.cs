@@ -6,7 +6,7 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services) =>
             services
-                .AddServices()
+                .AddUseCases()
                 .AddHelpers()
                 .AddValidators();
     }

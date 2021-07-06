@@ -28,7 +28,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
             _sessionManager = sessionManager;
         }
         
-        public async Task<IResponse<TResource>> PerformAsync(TRequest request)
+        public async Task<IResponse<TResource>> HandleRequestAsync(TRequest request)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
                 }
                 Session = sessionGenerationResult.Session;
                 
-                return await HandleRequestAsync(request);
+                return await HandleAsync(request);
             }
             catch (Exception exception)
             {
@@ -57,7 +57,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
             }
         }
 
-        protected abstract Task<Response<TResource>> HandleRequestAsync(TRequest request);
+        protected abstract Task<Response<TResource>> HandleAsync(TRequest request);
 
         protected Response<TResource> ValidationFailed(string propertyName, string errorMessage)
         {
