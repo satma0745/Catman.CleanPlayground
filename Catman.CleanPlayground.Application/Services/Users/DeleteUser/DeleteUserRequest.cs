@@ -1,8 +1,7 @@
-namespace Catman.CleanPlayground.Application.Services.Users.Requests
+namespace Catman.CleanPlayground.Application.Services.Users.DeleteUser
 {
     using System;
     using Catman.CleanPlayground.Application.Services.Common.Request;
-    using FluentValidation;
 
     public class DeleteUserRequest : RequestBase
     {
@@ -12,14 +11,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Requests
             : base(authorizationToken)
         {
             Id = id;
-        }
-    }
-
-    internal class DeleteUserRequestValidator : AbstractValidator<DeleteUserRequest>
-    {
-        public DeleteUserRequestValidator()
-        {
-            RuleFor(request => request.Id).NotEmpty();
         }
     }
 }

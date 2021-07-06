@@ -1,11 +1,9 @@
-namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
+namespace Catman.CleanPlayground.Application.Services.Authentication.GetCurrentUser
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
-    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
-    using Catman.CleanPlayground.Application.Services.Authentication.Resources;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Session;

@@ -1,17 +1,7 @@
-namespace Catman.CleanPlayground.Application.Services.Users.Requests
+namespace Catman.CleanPlayground.Application.Services.Users.RegisterUser
 {
     using Catman.CleanPlayground.Application.Extensions.Validation;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using FluentValidation;
-
-    public class RegisterUserRequest : RequestBase
-    {
-        public string Username { get; set; }
-        
-        public string Password { get; set; }
-        
-        public string DisplayName { get; set; }
-    }
 
     internal class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequest>
     {

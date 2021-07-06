@@ -6,7 +6,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using AutoMapper;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.Application.Services.Users;
-    using Catman.CleanPlayground.Application.Services.Users.Requests;
+    using Catman.CleanPlayground.Application.Services.Users.DeleteUser;
+    using Catman.CleanPlayground.Application.Services.Users.RegisterUser;
+    using Catman.CleanPlayground.Application.Services.Users.UpdateUser;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using Catman.CleanPlayground.WebApi.Extensions.Services;
     using Microsoft.AspNetCore.Mvc;

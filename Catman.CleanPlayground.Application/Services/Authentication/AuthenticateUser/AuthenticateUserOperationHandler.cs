@@ -1,10 +1,9 @@
-namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
+namespace Catman.CleanPlayground.Application.Services.Authentication.AuthenticateUser
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
-    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Session;

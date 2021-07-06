@@ -3,7 +3,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Services.Authentication;
-    using Catman.CleanPlayground.Application.Services.Authentication.Requests;
+    using Catman.CleanPlayground.Application.Services.Authentication.AuthenticateUser;
+    using Catman.CleanPlayground.Application.Services.Authentication.GetCurrentUser;
     using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
     using Catman.CleanPlayground.WebApi.Extensions.Services;

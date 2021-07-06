@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.Services.Users.Requests
+namespace Catman.CleanPlayground.Application.Services.Users.GetUsers
 {
     using Catman.CleanPlayground.Application.Services.Common.Request;
 

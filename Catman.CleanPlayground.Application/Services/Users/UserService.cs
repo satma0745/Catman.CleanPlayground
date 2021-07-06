@@ -4,8 +4,10 @@ namespace Catman.CleanPlayground.Application.Services.Users
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Services.Common.Operation;
     using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Users.Requests;
-    using Catman.CleanPlayground.Application.Services.Users.Resources;
+    using Catman.CleanPlayground.Application.Services.Users.DeleteUser;
+    using Catman.CleanPlayground.Application.Services.Users.GetUsers;
+    using Catman.CleanPlayground.Application.Services.Users.RegisterUser;
+    using Catman.CleanPlayground.Application.Services.Users.UpdateUser;
 
     internal class UserService : IUserService
     {

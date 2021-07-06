@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.Services.Users.Operations
+namespace Catman.CleanPlayground.Application.Services.Users.GetUsers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -6,8 +6,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
     using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Users.Requests;
-    using Catman.CleanPlayground.Application.Services.Users.Resources;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
 

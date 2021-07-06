@@ -1,8 +1,8 @@
-namespace Catman.CleanPlayground.Application.Services.Authentication.Resources
+namespace Catman.CleanPlayground.Application.Services.Users.GetUsers
 {
     using System;
 
-    public class CurrentUserResource
+    public class UserResource
     {
         public Guid Id { get; set; }
         
