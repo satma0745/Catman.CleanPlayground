@@ -10,12 +10,12 @@ namespace Catman.CleanPlayground.Application.UseCases.Users
 
     public interface IUserService
     {
-        Task<OperationResult<ICollection<UserResource>>> GetUsersAsync();
+        Task<IResponse<ICollection<UserResource>>> GetUsersAsync();
 
-        Task<OperationResult<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest);
+        Task<IResponse<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest);
 
-        Task<OperationResult<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest);
+        Task<IResponse<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest);
 
-        Task<OperationResult<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest);
+        Task<IResponse<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest);
     }
 }

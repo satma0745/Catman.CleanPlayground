@@ -7,8 +7,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication
 
     public interface IAuthenticationService
     {
-        public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request);
+        public Task<IResponse<string>> AuthenticateUserAsync(AuthenticateUserRequest request);
 
-        public Task<OperationResult<CurrentUserResource>> GetCurrentUserAsync(GetCurrentUserRequest request);
+        public Task<IResponse<CurrentUserResource>> GetCurrentUserAsync(GetCurrentUserRequest request);
     }
 }

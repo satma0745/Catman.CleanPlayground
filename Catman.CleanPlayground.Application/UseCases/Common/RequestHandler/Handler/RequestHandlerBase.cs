@@ -28,7 +28,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
             _sessionManager = sessionManager;
         }
         
-        public async Task<OperationResult<TResource>> PerformAsync(TRequest request)
+        public async Task<IResponse<TResource>> PerformAsync(TRequest request)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
                 if (!validationResult.IsValid)
                 {
                     var validationError = new ValidationError(validationResult);
-                    return new OperationResult<TResource>(validationError);
+                    return new Response<TResource>(validationError);
                 }
 
                 var authorizationToken = request.AuthorizationToken;
@@ -44,7 +44,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
                 if (!sessionGenerationResult.Success && RequireAuthorizedUser)
                 {
                     var authenticationError = new AuthenticationError(sessionGenerationResult.ValidationError);
-                    return new OperationResult<TResource>(authenticationError);
+                    return new Response<TResource>(authenticationError);
                 }
                 Session = sessionGenerationResult.Session;
                 
@@ -53,38 +53,38 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
             catch (Exception exception)
             {
                 var fatalError = new FatalError(exception);
-                return new OperationResult<TResource>(fatalError);
+                return new Response<TResource>(fatalError);
             }
         }
 
-        protected abstract Task<OperationResult<TResource>> HandleRequestAsync(TRequest request);
+        protected abstract Task<Response<TResource>> HandleRequestAsync(TRequest request);
 
-        protected OperationResult<TResource> ValidationFailed(string propertyName, string errorMessage)
+        protected Response<TResource> ValidationFailed(string propertyName, string errorMessage)
         {
             var validationMessages = new Dictionary<string, string>
             {
                 {propertyName, errorMessage}
             };
             var validationError = new ValidationError(validationMessages);
-            return new OperationResult<TResource>(validationError);
+            return new Response<TResource>(validationError);
         }
 
-        protected OperationResult<TResource> AccessViolation(string message)
+        protected Response<TResource> AccessViolation(string message)
         {
             var accessViolationError = new AccessViolationError(message);
-            return new OperationResult<TResource>(accessViolationError);
+            return new Response<TResource>(accessViolationError);
         }
         
-        protected OperationResult<TResource> NotFound(string message)
+        protected Response<TResource> NotFound(string message)
         {
             var notFoundError = new NotFoundError(message);
-            return new OperationResult<TResource>(notFoundError);
+            return new Response<TResource>(notFoundError);
         }
 
-        protected OperationResult<TResource> Success(TResource resource) =>
-            new OperationResult<TResource>(resource);
+        protected Response<TResource> Success(TResource resource) =>
+            new Response<TResource>(resource);
 
-        protected OperationResult<BlankResource> Success() =>
-            new OperationResult<BlankResource>(new BlankResource());
+        protected Response<BlankResource> Success() =>
+            new Response<BlankResource>(new BlankResource());
     }
 }

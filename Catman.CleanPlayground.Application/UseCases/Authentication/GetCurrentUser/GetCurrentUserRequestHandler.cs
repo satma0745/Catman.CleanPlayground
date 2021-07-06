@@ -27,7 +27,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentU
             _mapper = mapper;
         }
 
-        protected override async Task<OperationResult<CurrentUserResource>> HandleRequestAsync(GetCurrentUserRequest _)
+        protected override async Task<Response<CurrentUserResource>> HandleRequestAsync(GetCurrentUserRequest _)
         {
             var currentUserId = Session.CurrentUser.Id;
             var currentUser = await _work.Users.GetUserAsync(currentUserId);

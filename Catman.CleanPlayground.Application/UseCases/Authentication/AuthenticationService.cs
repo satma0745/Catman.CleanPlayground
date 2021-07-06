@@ -19,10 +19,10 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication
             _getCurrentUserRequestHandler = getCurrentUserRequestHandler;
         }
         
-        public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request) =>
+        public Task<IResponse<string>> AuthenticateUserAsync(AuthenticateUserRequest request) =>
             _authenticateUserRequestHandler.PerformAsync(request);
 
-        public Task<OperationResult<CurrentUserResource>> GetCurrentUserAsync(GetCurrentUserRequest request) =>
+        public Task<IResponse<CurrentUserResource>> GetCurrentUserAsync(GetCurrentUserRequest request) =>
             _getCurrentUserRequestHandler.PerformAsync(request);
     }
 }

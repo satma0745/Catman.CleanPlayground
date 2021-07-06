@@ -2,20 +2,20 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.Response
 {
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
 
-    public class OperationResult<TResource>
+    internal class Response<TResource> : IResponse<TResource>
     {
         private readonly bool _success;
         private readonly TResource _resource;
         private readonly Error _error;
 
-        public OperationResult(TResource resource)
+        public Response(TResource resource)
         {
             _success = true;
             _resource = resource;
             _error = default;
         }
 
-        public OperationResult(Error error)
+        public Response(Error error)
         {
             _success = false;
             _resource = default;

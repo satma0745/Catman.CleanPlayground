@@ -25,7 +25,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.GetUsers
             _work = unitOfWork;
         }
 
-        protected override async Task<OperationResult<ICollection<UserResource>>> HandleRequestAsync(GetUsersRequest _)
+        protected override async Task<Response<ICollection<UserResource>>> HandleRequestAsync(GetUsersRequest _)
         {
             var userEntities = await _work.Users.GetUsersAsync();
             

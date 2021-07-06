@@ -27,7 +27,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
             _work = unitOfWork;
         }
         
-        protected override async Task<OperationResult<string>> HandleRequestAsync(AuthenticateUserRequest request)
+        protected override async Task<Response<string>> HandleRequestAsync(AuthenticateUserRequest request)
         {
             if (!await _work.Users.UserExistsAsync(request.Username))
             {

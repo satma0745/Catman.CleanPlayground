@@ -28,16 +28,16 @@ namespace Catman.CleanPlayground.Application.UseCases.Users
             _deleteUserRequestHandler = deleteUserRequestHandler;
         }
 
-        public Task<OperationResult<ICollection<UserResource>>> GetUsersAsync() =>
+        public Task<IResponse<ICollection<UserResource>>> GetUsersAsync() =>
             _getUsersRequestHandler.PerformAsync(new GetUsersRequest());
 
-        public Task<OperationResult<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest) =>
+        public Task<IResponse<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest) =>
             _registerUserRequestHandler.PerformAsync(registerRequest);
 
-        public Task<OperationResult<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest) =>
+        public Task<IResponse<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest) =>
             _updateUserRequestHandler.PerformAsync(updateRequest);
 
-        public Task<OperationResult<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest) =>
+        public Task<IResponse<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest) =>
             _deleteUserRequestHandler.PerformAsync(deleteRequest);
     }
 }

@@ -30,7 +30,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.RegisterUser
             _mapper = mapper;
         }
 
-        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(RegisterUserRequest request)
+        protected override async Task<Response<BlankResource>> HandleRequestAsync(RegisterUserRequest request)
         {
             if (!await _work.Users.UsernameIsAvailableAsync(request.Username))
             {

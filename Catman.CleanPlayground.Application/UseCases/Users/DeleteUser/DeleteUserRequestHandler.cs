@@ -23,7 +23,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
             _work = unitOfWork;
         }
 
-        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(DeleteUserRequest request)
+        protected override async Task<Response<BlankResource>> HandleRequestAsync(DeleteUserRequest request)
         {
             if (request.Id != Session.CurrentUser.Id)
             {
