@@ -5,7 +5,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
 
     public interface IRequestHandler<in TRequest, TResource>
-        where TRequest : RequestBase
+        where TRequest : IRequest
     {
         Task<OperationResult<TResource>> PerformAsync(TRequest request);
     }

@@ -11,7 +11,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Hand
     using FluentValidation;
 
     internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, TResource>
-        where TRequest : RequestBase
+        where TRequest : IRequest
     {
         private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
         private readonly ISessionManager _sessionManager;
