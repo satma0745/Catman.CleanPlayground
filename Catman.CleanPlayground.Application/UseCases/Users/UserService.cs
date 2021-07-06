@@ -2,7 +2,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Users.DeleteUser;
     using Catman.CleanPlayground.Application.UseCases.Users.GetUsers;
@@ -11,33 +11,33 @@ namespace Catman.CleanPlayground.Application.UseCases.Users
 
     internal class UserService : IUserService
     {
-        private readonly IOperation<GetUsersRequest, ICollection<UserResource>> _getUsersOperation;
-        private readonly IOperation<RegisterUserRequest, BlankResource> _registerUserOperation;
-        private readonly IOperation<UpdateUserRequest, BlankResource> _updateUserOperation;
-        private readonly IOperation<DeleteUserRequest, BlankResource> _deleteUserOperation;
+        private readonly IRequestHandler<GetUsersRequest, ICollection<UserResource>> _getUsersRequestHandler;
+        private readonly IRequestHandler<RegisterUserRequest, BlankResource> _registerUserRequestHandler;
+        private readonly IRequestHandler<UpdateUserRequest, BlankResource> _updateUserRequestHandler;
+        private readonly IRequestHandler<DeleteUserRequest, BlankResource> _deleteUserRequestHandler;
 
         public UserService(
-            IOperation<GetUsersRequest, ICollection<UserResource>> getUsersOperation,
-            IOperation<RegisterUserRequest, BlankResource> registerUserOperation,
-            IOperation<UpdateUserRequest, BlankResource> updateUserOperation,
-            IOperation<DeleteUserRequest, BlankResource> deleteUserOperation)
+            IRequestHandler<GetUsersRequest, ICollection<UserResource>> getUsersRequestHandler,
+            IRequestHandler<RegisterUserRequest, BlankResource> registerUserRequestHandler,
+            IRequestHandler<UpdateUserRequest, BlankResource> updateUserRequestHandler,
+            IRequestHandler<DeleteUserRequest, BlankResource> deleteUserRequestHandler)
         {
-            _getUsersOperation = getUsersOperation;
-            _registerUserOperation = registerUserOperation;
-            _updateUserOperation = updateUserOperation;
-            _deleteUserOperation = deleteUserOperation;
+            _getUsersRequestHandler = getUsersRequestHandler;
+            _registerUserRequestHandler = registerUserRequestHandler;
+            _updateUserRequestHandler = updateUserRequestHandler;
+            _deleteUserRequestHandler = deleteUserRequestHandler;
         }
 
         public Task<OperationResult<ICollection<UserResource>>> GetUsersAsync() =>
-            _getUsersOperation.PerformAsync(new GetUsersRequest());
+            _getUsersRequestHandler.PerformAsync(new GetUsersRequest());
 
         public Task<OperationResult<BlankResource>> RegisterUserAsync(RegisterUserRequest registerRequest) =>
-            _registerUserOperation.PerformAsync(registerRequest);
+            _registerUserRequestHandler.PerformAsync(registerRequest);
 
         public Task<OperationResult<BlankResource>> UpdateUserAsync(UpdateUserRequest updateRequest) =>
-            _updateUserOperation.PerformAsync(updateRequest);
+            _updateUserRequestHandler.PerformAsync(updateRequest);
 
         public Task<OperationResult<BlankResource>> DeleteUserAsync(DeleteUserRequest deleteRequest) =>
-            _deleteUserOperation.PerformAsync(deleteRequest);
+            _deleteUserRequestHandler.PerformAsync(deleteRequest);
     }
 }

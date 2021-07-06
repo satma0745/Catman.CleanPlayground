@@ -3,26 +3,26 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.UseCases.Authentication.AuthenticateUser;
     using Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentUser;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
 
     internal class AuthenticationService : IAuthenticationService
     {
-        private readonly IOperation<AuthenticateUserRequest, string> _authenticateUserOperation;
-        private readonly IOperation<GetCurrentUserRequest, CurrentUserResource> _getCurrentUserOperation;
+        private readonly IRequestHandler<AuthenticateUserRequest, string> _authenticateUserRequestHandler;
+        private readonly IRequestHandler<GetCurrentUserRequest, CurrentUserResource> _getCurrentUserRequestHandler;
 
         public AuthenticationService(
-            IOperation<AuthenticateUserRequest, string> authenticateUserOperation,
-            IOperation<GetCurrentUserRequest, CurrentUserResource> getCurrentUserOperation)
+            IRequestHandler<AuthenticateUserRequest, string> authenticateUserRequestHandler,
+            IRequestHandler<GetCurrentUserRequest, CurrentUserResource> getCurrentUserRequestHandler)
         {
-            _authenticateUserOperation = authenticateUserOperation;
-            _getCurrentUserOperation = getCurrentUserOperation;
+            _authenticateUserRequestHandler = authenticateUserRequestHandler;
+            _getCurrentUserRequestHandler = getCurrentUserRequestHandler;
         }
         
         public Task<OperationResult<string>> AuthenticateUserAsync(AuthenticateUserRequest request) =>
-            _authenticateUserOperation.PerformAsync(request);
+            _authenticateUserRequestHandler.PerformAsync(request);
 
         public Task<OperationResult<CurrentUserResource>> GetCurrentUserAsync(GetCurrentUserRequest request) =>
-            _getCurrentUserOperation.PerformAsync(request);
+            _getCurrentUserRequestHandler.PerformAsync(request);
     }
 }

@@ -1,15 +1,16 @@
-namespace Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler
+namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.Request;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using FluentValidation;
 
-    internal abstract class OperationHandlerBase<TRequest, TResource> : IOperation<TRequest, TResource>
+    internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, TResource>
         where TRequest : RequestBase
     {
         private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
@@ -19,7 +20,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler
         
         protected ISession Session { get; private set; }
 
-        protected OperationHandlerBase(
+        protected RequestHandlerBase(
             IEnumerable<IValidator<TRequest>> requestValidators,
             ISessionManager sessionManager)
         {

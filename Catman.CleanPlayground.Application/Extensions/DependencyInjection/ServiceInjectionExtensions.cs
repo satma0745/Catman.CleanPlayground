@@ -4,8 +4,8 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     using System.Reflection;
     using Catman.CleanPlayground.Application.Extensions.Reflection;
     using Catman.CleanPlayground.Application.UseCases.Authentication;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler;
     using Catman.CleanPlayground.Application.UseCases.Users;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -14,15 +14,15 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             var types = Assembly.GetExecutingAssembly().DefinedTypes;
-            var operationHandlerTypes = types
+            var requestHandlerTypes = types
                 .Where(type => !type.IsInterface && !type.IsAbstract)
-                .Where(type => type.Inherits(typeof(OperationHandlerBase<,>)));
-            foreach (var operationHandlerType in operationHandlerTypes)
+                .Where(type => type.Inherits(typeof(RequestHandlerBase<,>)));
+            foreach (var concreteRequestHandlerType in requestHandlerTypes)
             {
-                var operationType = operationHandlerType.BaseType!
-                    .GetImplementedGenericInterface(typeof(IOperation<,>));
+                var abstractRequestHandlerType = concreteRequestHandlerType.BaseType!
+                    .GetImplementedGenericInterface(typeof(IRequestHandler<,>));
 
-                services.AddScoped(operationType, operationHandlerType);
+                services.AddScoped(abstractRequestHandlerType, concreteRequestHandlerType);
             }
 
             services.AddScoped<IUserService, UserService>();

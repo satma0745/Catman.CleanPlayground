@@ -4,17 +4,17 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using FluentValidation;
 
-    internal class DeleteUserOperationHandler : OperationHandlerBase<DeleteUserRequest, BlankResource>
+    internal class DeleteUserRequestHandler : RequestHandlerBase<DeleteUserRequest, BlankResource>
     {
         private readonly IUnitOfWork _work;
 
         protected override bool RequireAuthorizedUser => true;
 
-        public DeleteUserOperationHandler(
+        public DeleteUserRequestHandler(
             IEnumerable<IValidator<DeleteUserRequest>> requestValidators,
             ISessionManager sessionManager,
             IUnitOfWork unitOfWork)

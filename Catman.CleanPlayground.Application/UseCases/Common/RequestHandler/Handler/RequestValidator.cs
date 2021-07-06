@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler
+namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;

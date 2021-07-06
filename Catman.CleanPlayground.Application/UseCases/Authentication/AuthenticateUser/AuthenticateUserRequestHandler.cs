@@ -5,17 +5,17 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using FluentValidation;
 
-    internal class AuthenticateUserOperationHandler : OperationHandlerBase<AuthenticateUserRequest, string>
+    internal class AuthenticateUserRequestHandler : RequestHandlerBase<AuthenticateUserRequest, string>
     {
         private readonly ISessionManager _sessionManager;
         private readonly IPasswordHelper _passwordHelper;
         private readonly IUnitOfWork _work;
 
-        public AuthenticateUserOperationHandler(
+        public AuthenticateUserRequestHandler(
             IEnumerable<IValidator<AuthenticateUserRequest>> requestValidators,
             ISessionManager sessionManager,
             IUnitOfWork unitOfWork,
