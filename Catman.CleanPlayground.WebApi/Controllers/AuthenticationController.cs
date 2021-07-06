@@ -2,10 +2,10 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Services.Authentication;
-    using Catman.CleanPlayground.Application.Services.Authentication.AuthenticateUser;
-    using Catman.CleanPlayground.Application.Services.Authentication.GetCurrentUser;
-    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
+    using Catman.CleanPlayground.Application.UseCases.Authentication;
+    using Catman.CleanPlayground.Application.UseCases.Authentication.AuthenticateUser;
+    using Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentUser;
+    using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
     using Catman.CleanPlayground.WebApi.Extensions.Services;
     using Microsoft.AspNetCore.Mvc;

@@ -3,10 +3,10 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
     using System.Linq;
     using System.Reflection;
     using Catman.CleanPlayground.Application.Extensions.Reflection;
-    using Catman.CleanPlayground.Application.Services.Authentication;
-    using Catman.CleanPlayground.Application.Services.Common.Operation;
-    using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
-    using Catman.CleanPlayground.Application.Services.Users;
+    using Catman.CleanPlayground.Application.UseCases.Authentication;
+    using Catman.CleanPlayground.Application.UseCases.Common.Operation;
+    using Catman.CleanPlayground.Application.UseCases.Common.Operation.Handler;
+    using Catman.CleanPlayground.Application.UseCases.Users;
     using Microsoft.Extensions.DependencyInjection;
 
     internal static class ServiceInjectionExtensions

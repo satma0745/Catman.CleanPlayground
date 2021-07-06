@@ -2,9 +2,9 @@ namespace Catman.CleanPlayground.Application.MappingProfiles
 {
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.Entities;
-    using Catman.CleanPlayground.Application.Services.Users.GetUsers;
-    using Catman.CleanPlayground.Application.Services.Users.RegisterUser;
-    using Catman.CleanPlayground.Application.Services.Users.UpdateUser;
+    using Catman.CleanPlayground.Application.UseCases.Users.GetUsers;
+    using Catman.CleanPlayground.Application.UseCases.Users.RegisterUser;
+    using Catman.CleanPlayground.Application.UseCases.Users.UpdateUser;
 
     internal class UserMappingProfile : Profile
     {

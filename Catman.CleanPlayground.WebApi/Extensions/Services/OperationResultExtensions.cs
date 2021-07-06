@@ -2,9 +2,9 @@ namespace Catman.CleanPlayground.WebApi.Extensions.Services
 {
     using System;
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Extensions.Services;
-    using Catman.CleanPlayground.Application.Services.Common.Response;
-    using Catman.CleanPlayground.Application.Services.Common.Response.Errors;
+    using Catman.CleanPlayground.Application.Extensions.UseCases;
+    using Catman.CleanPlayground.Application.UseCases.Common.Response;
+    using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using Microsoft.AspNetCore.Mvc;
 
     internal static class OperationResultExtensions
