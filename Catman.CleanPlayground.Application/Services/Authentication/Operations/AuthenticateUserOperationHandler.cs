@@ -6,7 +6,6 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
@@ -29,20 +28,19 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
             _work = unitOfWork;
         }
         
-        protected override async Task<OperationResult<string>> HandleRequestAsync(
-            OperationParameters<AuthenticateUserRequest> parameters)
+        protected override async Task<OperationResult<string>> HandleRequestAsync(AuthenticateUserRequest request)
         {
-            if (!await _work.Users.UserExistsAsync(parameters.Request.Username))
+            if (!await _work.Users.UserExistsAsync(request.Username))
             {
                 return NotFound("User not found.");
             }
 
-            var user = await _work.Users.GetUserAsync(parameters.Request.Username);
+            var user = await _work.Users.GetUserAsync(request.Username);
 
-            var hashedPassword = _passwordHelper.HashPassword(parameters.Request.Password, user.Password.Hash);
+            var hashedPassword = _passwordHelper.HashPassword(request.Password, user.Password.Hash);
             if (user.Password.Hash != hashedPassword)
             {
-                return ValidationFailed(nameof(parameters.Request.Password), "Incorrect password.");
+                return ValidationFailed(nameof(request.Password), "Incorrect password.");
             }
 
             var authorizationToken = _sessionManager.GenerateAuthorizationToken(user.Id);

@@ -6,7 +6,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.Application.Session;
@@ -33,28 +32,27 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _work = unitOfWork;
         }
         
-        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
-            OperationParameters<UpdateUserRequest> parameters)
+        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(UpdateUserRequest request)
         {
-            if (parameters.Request.Id != parameters.Session.CurrentUser.Id)
+            if (request.Id != Session.CurrentUser.Id)
             {
                 return AccessViolation("You can only edit your own profile.");
             }
                 
-            if (!await _work.Users.UserExistsAsync(parameters.Request.Id))
+            if (!await _work.Users.UserExistsAsync(request.Id))
             {
                 return NotFound("User not found.");
             }
 
-            if (!await _work.Users.UsernameIsAvailableAsync(parameters.Request.Username, parameters.Request.Id))
+            if (!await _work.Users.UsernameIsAvailableAsync(request.Username, request.Id))
             {
-                return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
+                return ValidationFailed(nameof(request.Username), "Already taken.");
             }
 
-            var user = await _work.Users.GetUserAsync(parameters.Request.Id);
+            var user = await _work.Users.GetUserAsync(request.Id);
 
-            _mapper.Map(parameters.Request, user);
-            user.Password = _passwordHelper.HashPassword(parameters.Request.Password);
+            _mapper.Map(request, user);
+            user.Password = _passwordHelper.HashPassword(request.Password);
             
             await _work.SaveAsync();
 

@@ -7,7 +7,6 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
     using Catman.CleanPlayground.Application.Services.Authentication.Requests;
     using Catman.CleanPlayground.Application.Services.Authentication.Resources;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Session;
     using FluentValidation;
@@ -30,10 +29,9 @@ namespace Catman.CleanPlayground.Application.Services.Authentication.Operations
             _mapper = mapper;
         }
 
-        protected override async Task<OperationResult<CurrentUserResource>> HandleRequestAsync(
-            OperationParameters<GetCurrentUserRequest> parameters)
+        protected override async Task<OperationResult<CurrentUserResource>> HandleRequestAsync(GetCurrentUserRequest _)
         {
-            var currentUserId = parameters.Session.CurrentUser.Id;
+            var currentUserId = Session.CurrentUser.Id;
             var currentUser = await _work.Users.GetUserAsync(currentUserId);
 
             return Success(_mapper.Map<CurrentUserResource>(currentUser));

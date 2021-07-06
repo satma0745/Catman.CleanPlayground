@@ -16,6 +16,8 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation.Handler
         private readonly ISessionManager _sessionManager;
         
         protected virtual bool RequireAuthorizedUser => false;
+        
+        protected ISession Session { get; private set; }
 
         protected OperationHandlerBase(
             IEnumerable<IValidator<TRequest>> requestValidators,
@@ -38,19 +40,14 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation.Handler
 
                 var authorizationToken = request.AuthorizationToken;
                 var sessionGenerationResult = await _sessionManager.RestoreSessionAsync(authorizationToken);
-
                 if (!sessionGenerationResult.Success && RequireAuthorizedUser)
                 {
                     var authenticationError = new AuthenticationError(sessionGenerationResult.ValidationError);
                     return new OperationResult<TResource>(authenticationError);
                 }
-
-                var operationParams = new OperationParameters<TRequest>
-                {
-                    Session = sessionGenerationResult.Session,
-                    Request = request
-                };
-                return await HandleRequestAsync(operationParams);
+                Session = sessionGenerationResult.Session;
+                
+                return await HandleRequestAsync(request);
             }
             catch (Exception exception)
             {
@@ -59,8 +56,7 @@ namespace Catman.CleanPlayground.Application.Services.Common.Operation.Handler
             }
         }
 
-        protected abstract Task<OperationResult<TResource>> HandleRequestAsync(
-            OperationParameters<TRequest> operationParameters);
+        protected abstract Task<OperationResult<TResource>> HandleRequestAsync(TRequest request);
 
         protected OperationResult<TResource> ValidationFailed(string propertyName, string errorMessage)
         {

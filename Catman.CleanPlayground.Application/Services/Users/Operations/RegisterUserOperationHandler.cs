@@ -7,7 +7,6 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
     using Catman.CleanPlayground.Application.Persistence.Entities;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Services.Common.Operation.Handler;
-    using Catman.CleanPlayground.Application.Services.Common.Request;
     using Catman.CleanPlayground.Application.Services.Common.Response;
     using Catman.CleanPlayground.Application.Services.Users.Requests;
     using Catman.CleanPlayground.Application.Session;
@@ -32,16 +31,15 @@ namespace Catman.CleanPlayground.Application.Services.Users.Operations
             _mapper = mapper;
         }
 
-        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(
-            OperationParameters<RegisterUserRequest> parameters)
+        protected override async Task<OperationResult<BlankResource>> HandleRequestAsync(RegisterUserRequest request)
         {
-            if (!await _work.Users.UsernameIsAvailableAsync(parameters.Request.Username))
+            if (!await _work.Users.UsernameIsAvailableAsync(request.Username))
             {
-                return ValidationFailed(nameof(parameters.Request.Username), "Already taken.");
+                return ValidationFailed(nameof(request.Username), "Already taken.");
             }
             
-            var user = _mapper.Map<UserEntity>(parameters.Request);
-            user.Password = _passwordHelper.HashPassword(parameters.Request.Password);
+            var user = _mapper.Map<UserEntity>(request);
+            user.Password = _passwordHelper.HashPassword(request.Password);
 
             await _work.Users.CreateUserAsync(user);
             
