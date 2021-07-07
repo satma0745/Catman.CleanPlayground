@@ -4,7 +4,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using FluentValidation;
 

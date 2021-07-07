@@ -1,11 +1,10 @@
-namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler.Handler
+namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.Request;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using FluentValidation;
