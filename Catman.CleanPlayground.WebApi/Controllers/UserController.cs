@@ -4,8 +4,6 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestBroker;
-    using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using Catman.CleanPlayground.Application.UseCases.Users.DeleteUser;
     using Catman.CleanPlayground.Application.UseCases.Users.GetUsers;
@@ -13,32 +11,33 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.Application.UseCases.Users.UpdateUser;
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using Catman.CleanPlayground.WebApi.Extensions.UseCases;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("/api/users")]
     public class UserController : ApiControllerBase
     {
-        private readonly IRequestBroker _requestBroker;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UserController(IRequestBroker requestBroker, IMapper mapper)
+        public UserController(IMediator mediator, IMapper mapper)
         {
-            _requestBroker = requestBroker;
+            _mediator = mediator;
             _mapper = mapper;
         }
 
         [HttpGet]
         public Task<IActionResult> GetUsersAsync() =>
-            _requestBroker
-                .SendRequestAsync<GetUsersRequest, ICollection<UserResource>>(new GetUsersRequest())
+            _mediator
+                .Send(new GetUsersRequest())
                 .SelectActionResultAsync(
                     users => Ok(_mapper.Map<ICollection<UserDto>>(users)),
                     _ => InternalServerError());
 
         [HttpPost("register")]
         public Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto) =>
-            _requestBroker
-                .SendRequestAsync<RegisterUserRequest, BlankResource>(_mapper.Map<RegisterUserRequest>(registerDto))
+            _mediator
+                .Send(_mapper.Map<RegisterUserRequest>(registerDto))
                 .SelectActionResultAsync(
                     () => Ok(),
                     error => error switch
@@ -56,8 +55,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             var updateRequest = new UpdateUserRequest(id, authorization);
             _mapper.Map(updateDto, updateRequest);
             
-            return await _requestBroker
-                .SendRequestAsync<UpdateUserRequest, BlankResource>(updateRequest)
+            return await _mediator
+                .Send(updateRequest)
                 .SelectActionResultAsync(
                     () => Ok(),
                     error => error switch
@@ -72,8 +71,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpGet("{userId:guid}/delete")]
         public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization) =>
-            _requestBroker
-                .SendRequestAsync<DeleteUserRequest, BlankResource>(new DeleteUserRequest(userId, authorization))
+            _mediator
+                .Send(new DeleteUserRequest(userId, authorization))
                 .SelectActionResultAsync(
                     () => Ok(),
                     error => error switch

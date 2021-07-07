@@ -2,15 +2,17 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.Request;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using FluentValidation;
+    using MediatR;
 
-    internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, TResource>
-        where TRequest : IRequest
+    internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, IResponse<TResource>>
+        where TRequest : RequestBase<TResource>
     {
         private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
         private readonly ISessionManager _sessionManager;
@@ -26,8 +28,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
             _requestValidators = requestValidators;
             _sessionManager = sessionManager;
         }
-        
-        public async Task<IResponse<TResource>> HandleRequestAsync(TRequest request)
+
+        public async Task<IResponse<TResource>> Handle(TRequest request, CancellationToken _)
         {
             try
             {

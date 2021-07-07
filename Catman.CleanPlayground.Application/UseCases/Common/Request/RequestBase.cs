@@ -1,8 +1,11 @@
 namespace Catman.CleanPlayground.Application.UseCases.Common.Request
 {
-    public abstract class RequestBase : IRequest
+    using Catman.CleanPlayground.Application.UseCases.Common.Response;
+    using MediatR;
+
+    public abstract class RequestBase<TResource> : IRequest<IResponse<TResource>>
     {
-        public string AuthorizationToken { get; set; }
+        public string AuthorizationToken { get; }
 
         protected RequestBase(string authorizationToken = default)
         {
