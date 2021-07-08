@@ -24,10 +24,11 @@ namespace Catman.CleanPlayground.WebApi
                 .AddPostgreSqlPersistence(_configuration)
                 .AddMappings()
                 .AddJwtAuthentication()
-                .AddWebApi();
+                .AddWebApi(_configuration);
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>
             application
+                .UseSwagger(_configuration)
                 .UseRouting()
                 .UseEndpoints(endpoints => endpoints.MapControllers());
     }
