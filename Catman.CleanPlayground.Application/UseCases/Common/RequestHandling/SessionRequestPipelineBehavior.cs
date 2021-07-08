@@ -1,24 +1,14 @@
 namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.Request;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
     using MediatR;
 
-    internal class SessionRequestPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    internal class SessionRequestPipelineBehavior<TAnyRequest, TResponse> : PipelineBehaviorBase<TAnyRequest, TResponse>
     {
-        private static bool IsSupportedResponseType =>
-            typeof(TResponse).IsInterface &&
-            typeof(TResponse).IsGenericType &&
-            typeof(TResponse).GetGenericTypeDefinition() == typeof(IResponse<>);
-        
         private readonly ITokenHelper _tokenHelper;
         private readonly ISessionManager _sessionManager;
 
@@ -28,25 +18,9 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
             _sessionManager = sessionManager;
         }
         
-        public Task<TResponse> Handle(
+        protected override async Task<IResponse<TResource>> HandleAsync<TRequest, TResource>(
             TRequest request,
-            CancellationToken _,
-            RequestHandlerDelegate<TResponse> next)
-        {
-            if (!IsSupportedResponseType)
-            {
-                throw new Exception("Unsupported request result type.");
-            }
-
-            return (Task<TResponse>) GetType()
-                .GetMethod(nameof(HandleRequestAsync), BindingFlags.Instance | BindingFlags.NonPublic)!
-                .MakeGenericMethod(typeof(TResponse).GenericTypeArguments.Single())
-                .Invoke(this, new object[] {request, next});
-        }
-            
-        private async Task<IResponse<TResource>> HandleRequestAsync<TResource>(
-            RequestBase<TResource> request,
-            RequestHandlerDelegate<IResponse<TResource>> handleAsync)
+            RequestHandlerDelegate<IResponse<TResource>> next)
         {
             var authorizationToken = request.AuthorizationToken;
             var tokenAuthenticationResult = await _tokenHelper.AuthenticateTokenAsync(authorizationToken);
@@ -64,7 +38,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
                 await _sessionManager.AuthorizeUserAsync(tokenAuthenticationResult.UserId);
             }
 
-            return await handleAsync();
+            return await next();
         }
     }
 }
