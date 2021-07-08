@@ -22,7 +22,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("who-am-i")]
         public Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization) =>
             _mediator
                 .Send(new GetCurrentUserRequest(authorization))
@@ -34,7 +34,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         _ => InternalServerError()
                     });
 
-        [HttpPost]
+        [HttpPost("token")]
         public Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto) =>
             _mediator
                 .Send(_mapper.Map<AuthenticateUserRequest>(credentialsDto))
