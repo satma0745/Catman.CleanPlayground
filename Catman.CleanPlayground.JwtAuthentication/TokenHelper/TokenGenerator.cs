@@ -1,16 +1,16 @@
-namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
+namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
 {
     using System;
     using Catman.CleanPlayground.JwtAuthentication.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.Token;
     using JWT.Builder;
 
-    internal class SessionTokenGenerator
+    internal class TokenGenerator
     {
         private readonly JwtAuthenticationConfiguration _configuration;
         private readonly JwtBuilder _jwtBuilder;
 
-        public SessionTokenGenerator(JwtAuthenticationConfiguration configuration)
+        public TokenGenerator(JwtAuthenticationConfiguration configuration)
         {
             _configuration = configuration;
             

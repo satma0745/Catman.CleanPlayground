@@ -1,7 +1,6 @@
-namespace Catman.CleanPlayground.JwtAuthentication.Session
+namespace Catman.CleanPlayground.Application.Helpers.Session
 {
     using System;
-    using Catman.CleanPlayground.Application.Session;
 
     internal class ApplicationUser : IApplicationUser
     {

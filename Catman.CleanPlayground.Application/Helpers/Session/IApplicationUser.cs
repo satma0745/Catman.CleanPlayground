@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.Session
+namespace Catman.CleanPlayground.Application.Helpers.Session
 {
     using System;
 

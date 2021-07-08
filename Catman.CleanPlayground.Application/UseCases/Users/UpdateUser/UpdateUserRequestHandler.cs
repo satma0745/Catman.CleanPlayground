@@ -2,14 +2,16 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
 {
     using System.Threading.Tasks;
     using AutoMapper;
+    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Password;
+    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
-    using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
 
     internal class UpdateUserRequestHandler : RequestHandlerBase<UpdateUserRequest, BlankResource>
     {
+        private readonly ISessionManager _sessionManager;
         private readonly IPasswordHelper _passwordHelper;
         private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
@@ -17,12 +19,14 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
         protected override bool RequireAuthorizedUser => true;
 
         public UpdateUserRequestHandler(
-            IPasswordHelper passwordHelper,
             ISessionManager sessionManager,
+            ITokenHelper tokenHelper,
+            IPasswordHelper passwordHelper,
             IUnitOfWork unitOfWork,
             IMapper mapper)
-            : base(sessionManager)
+            : base(sessionManager, tokenHelper)
         {
+            _sessionManager = sessionManager;
             _passwordHelper = passwordHelper;
             _mapper = mapper;
             _work = unitOfWork;
@@ -30,7 +34,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
         
         protected override async Task<Response<BlankResource>> HandleAsync(UpdateUserRequest request)
         {
-            if (request.Id != Session.CurrentUser.Id)
+            if (request.Id != _sessionManager.CurrentUser.Id)
             {
                 return AccessViolation("You can only edit your own profile.");
             }

@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.JwtAuthentication.Session.Manager
+namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
 {
     using System;
 

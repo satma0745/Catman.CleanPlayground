@@ -1,26 +1,32 @@
 namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
 {
     using System.Threading.Tasks;
+    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
+    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
-    using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
 
     internal class DeleteUserRequestHandler : RequestHandlerBase<DeleteUserRequest, BlankResource>
     {
+        private readonly ISessionManager _sessionManager;
         private readonly IUnitOfWork _work;
 
         protected override bool RequireAuthorizedUser => true;
 
-        public DeleteUserRequestHandler(ISessionManager sessionManager, IUnitOfWork unitOfWork)
-            : base(sessionManager)
+        public DeleteUserRequestHandler(
+            ISessionManager sessionManager,
+            ITokenHelper tokenHelper,
+            IUnitOfWork unitOfWork)
+            : base(sessionManager, tokenHelper)
         {
+            _sessionManager = sessionManager;
             _work = unitOfWork;
         }
 
         protected override async Task<Response<BlankResource>> HandleAsync(DeleteUserRequest request)
         {
-            if (request.Id != Session.CurrentUser.Id)
+            if (request.Id != _sessionManager.CurrentUser.Id)
             {
                 return AccessViolation("You can only delete your own profile.");
             }

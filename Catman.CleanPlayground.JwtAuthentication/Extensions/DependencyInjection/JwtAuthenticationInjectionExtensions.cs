@@ -1,9 +1,9 @@
 namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection
 {
-    using Catman.CleanPlayground.Application.Session;
+    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.JwtAuthentication.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.Configuration;
-    using Catman.CleanPlayground.JwtAuthentication.Session.Manager;
+    using Catman.CleanPlayground.JwtAuthentication.TokenHelper;
     using JWT.Algorithms;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +30,8 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjectio
 
         private static IServiceCollection AddSessionManager(this IServiceCollection services) =>
             services
-                .AddScoped<ISessionManager, SessionManager>()
-                .AddScoped<SessionTokenGenerator>()
-                .AddScoped<SessionGenerator>();
+                .AddScoped<ITokenHelper, TokenHelper>()
+                .AddScoped<TokenGenerator>()
+                .AddScoped<TokenAuthenticator>();
     }
 }

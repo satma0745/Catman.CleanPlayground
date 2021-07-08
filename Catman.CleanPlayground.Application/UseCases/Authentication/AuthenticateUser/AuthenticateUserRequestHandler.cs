@@ -1,25 +1,27 @@
 namespace Catman.CleanPlayground.Application.UseCases.Authentication.AuthenticateUser
 {
     using System.Threading.Tasks;
+    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Password;
+    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
-    using Catman.CleanPlayground.Application.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
 
     internal class AuthenticateUserRequestHandler : RequestHandlerBase<AuthenticateUserRequest, string>
     {
-        private readonly ISessionManager _sessionManager;
+        private readonly ITokenHelper _tokenHelper;
         private readonly IPasswordHelper _passwordHelper;
         private readonly IUnitOfWork _work;
 
         public AuthenticateUserRequestHandler(
             ISessionManager sessionManager,
+            ITokenHelper tokenHelper,
             IUnitOfWork unitOfWork,
             IPasswordHelper passwordHelper)
-            : base(sessionManager)
+            : base(sessionManager, tokenHelper)
         {
-            _sessionManager = sessionManager;
+            _tokenHelper = tokenHelper;
             _passwordHelper = passwordHelper;
             _work = unitOfWork;
         }
@@ -39,7 +41,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
                 return ValidationFailed(nameof(request.Password), "Incorrect password.");
             }
 
-            var authorizationToken = _sessionManager.GenerateAuthorizationToken(user.Id);
+            var authorizationToken = _tokenHelper.GenerateToken(user.Id);
             return Success(authorizationToken);
         }
     }
