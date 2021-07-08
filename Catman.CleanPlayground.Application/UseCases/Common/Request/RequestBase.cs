@@ -5,6 +5,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.Request
 
     public abstract class RequestBase<TResource> : IRequest<IResponse<TResource>>
     {
+        public virtual bool RequireAuthorizedUser => false;
+        
         public string AuthorizationToken { get; }
 
         protected RequestBase(string authorizationToken = default)

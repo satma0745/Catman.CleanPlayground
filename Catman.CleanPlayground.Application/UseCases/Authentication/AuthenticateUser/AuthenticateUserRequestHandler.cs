@@ -3,7 +3,6 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
@@ -15,11 +14,9 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
         private readonly IUnitOfWork _work;
 
         public AuthenticateUserRequestHandler(
-            ISessionManager sessionManager,
             ITokenHelper tokenHelper,
             IUnitOfWork unitOfWork,
             IPasswordHelper passwordHelper)
-            : base(sessionManager, tokenHelper)
         {
             _tokenHelper = tokenHelper;
             _passwordHelper = passwordHelper;

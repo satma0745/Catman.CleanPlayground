@@ -1,7 +1,6 @@
 namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
 {
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
@@ -12,13 +11,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
         private readonly ISessionManager _sessionManager;
         private readonly IUnitOfWork _work;
 
-        protected override bool RequireAuthorizedUser => true;
-
-        public DeleteUserRequestHandler(
-            ISessionManager sessionManager,
-            ITokenHelper tokenHelper,
-            IUnitOfWork unitOfWork)
-            : base(sessionManager, tokenHelper)
+        public DeleteUserRequestHandler(ISessionManager sessionManager, IUnitOfWork unitOfWork)
         {
             _sessionManager = sessionManager;
             _work = unitOfWork;

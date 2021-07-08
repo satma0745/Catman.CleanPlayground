@@ -6,6 +6,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.DeleteUser
 
     public class DeleteUserRequest : RequestBase<BlankResource>
     {
+        public override bool RequireAuthorizedUser => true;
+
         public Guid Id { get; }
 
         public DeleteUserRequest(Guid id, string authorizationToken)

@@ -3,8 +3,6 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.GetUsers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
-    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
@@ -14,12 +12,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.GetUsers
         private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
-        public GetUsersRequestHandler(
-            ISessionManager sessionManager,
-            ITokenHelper tokenHelper,
-            IUnitOfWork unitOfWork,
-            IMapper mapper)
-            : base(sessionManager, tokenHelper)
+        public GetUsersRequestHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
             _work = unitOfWork;

@@ -2,9 +2,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.RegisterUser
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Password;
-    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.Entities;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
@@ -16,13 +14,7 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.RegisterUser
         private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
-        public RegisterUserRequestHandler(
-            ISessionManager sessionManager,
-            ITokenHelper tokenHelper,
-            IUnitOfWork unitOfWork,
-            IPasswordHelper passwordHelper,
-            IMapper mapper)
-            : base(sessionManager, tokenHelper)
+        public RegisterUserRequestHandler(IUnitOfWork unitOfWork, IPasswordHelper passwordHelper, IMapper mapper)
         {
             _passwordHelper = passwordHelper;
             _work = unitOfWork;

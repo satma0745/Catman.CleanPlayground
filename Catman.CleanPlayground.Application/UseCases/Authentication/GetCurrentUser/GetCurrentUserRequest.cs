@@ -4,6 +4,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentU
 
     public class GetCurrentUserRequest : RequestBase<CurrentUserResource>
     {
+        public override bool RequireAuthorizedUser => true;
+
         public GetCurrentUserRequest(string authorizationToken)
             : base(authorizationToken)
         {

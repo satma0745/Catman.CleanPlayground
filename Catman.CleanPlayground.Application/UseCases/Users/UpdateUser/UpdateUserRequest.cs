@@ -6,6 +6,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
 
     public class UpdateUserRequest : RequestBase<BlankResource>
     {
+        public override bool RequireAuthorizedUser => true;
+
         public Guid Id { get; }
         
         public string Username { get; set; }

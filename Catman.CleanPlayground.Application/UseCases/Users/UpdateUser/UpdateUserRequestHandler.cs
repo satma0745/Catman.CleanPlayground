@@ -2,7 +2,6 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
 {
     using System.Threading.Tasks;
     using AutoMapper;
-    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
@@ -16,15 +15,11 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
         private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
-        protected override bool RequireAuthorizedUser => true;
-
         public UpdateUserRequestHandler(
             ISessionManager sessionManager,
-            ITokenHelper tokenHelper,
             IPasswordHelper passwordHelper,
             IUnitOfWork unitOfWork,
             IMapper mapper)
-            : base(sessionManager, tokenHelper)
         {
             _sessionManager = sessionManager;
             _passwordHelper = passwordHelper;

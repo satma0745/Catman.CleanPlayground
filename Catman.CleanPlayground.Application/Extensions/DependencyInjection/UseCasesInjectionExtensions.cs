@@ -10,6 +10,7 @@ namespace Catman.CleanPlayground.Application.Extensions.DependencyInjection
         public static IServiceCollection AddUseCases(this IServiceCollection services) =>
             services
                 .AddMediatR(Assembly.GetExecutingAssembly())
-                .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationPipelineBehavior<,>));
+                .AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationPipelineBehavior<,>))
+                .AddScoped(typeof(IPipelineBehavior<,>), typeof(SessionRequestPipelineBehavior<,>));
     }
 }

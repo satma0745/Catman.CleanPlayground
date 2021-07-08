@@ -4,8 +4,6 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
-    using Catman.CleanPlayground.Application.Helpers.Session;
     using Catman.CleanPlayground.Application.UseCases.Common.Request;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
@@ -14,33 +12,10 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
     internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, IResponse<TResource>>
         where TRequest : RequestBase<TResource>
     {
-        private readonly ISessionManager _sessionManager;
-        private readonly ITokenHelper _tokenHelper;
-        
-        protected virtual bool RequireAuthorizedUser => false;
-        
-        protected RequestHandlerBase(ISessionManager sessionManager, ITokenHelper tokenHelper)
-        {
-            _sessionManager = sessionManager;
-            _tokenHelper = tokenHelper;
-        }
-
         public async Task<IResponse<TResource>> Handle(TRequest request, CancellationToken _)
         {
             try
             {
-                var authorizationToken = request.AuthorizationToken;
-                var tokenAuthenticationResult = await _tokenHelper.AuthenticateTokenAsync(authorizationToken);
-                if (!tokenAuthenticationResult.Success && RequireAuthorizedUser)
-                {
-                    var authenticationError = new AuthenticationError(tokenAuthenticationResult.ErrorMessage);
-                    return new Response<TResource>(authenticationError);
-                }
-                if (tokenAuthenticationResult.Success)
-                {
-                    await _sessionManager.AuthorizeUserAsync(tokenAuthenticationResult.UserId);
-                }
-                
                 return await HandleAsync(request);
             }
             catch (Exception exception)
