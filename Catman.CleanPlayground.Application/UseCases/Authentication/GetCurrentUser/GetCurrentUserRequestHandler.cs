@@ -1,13 +1,11 @@
 namespace Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentUser
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
-    using FluentValidation;
 
     internal class GetCurrentUserRequestHandler : RequestHandlerBase<GetCurrentUserRequest, CurrentUserResource>
     {
@@ -16,12 +14,8 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.GetCurrentU
         
         protected override bool RequireAuthorizedUser => true;
 
-        public GetCurrentUserRequestHandler(
-            IEnumerable<IValidator<GetCurrentUserRequest>> requestValidators,
-            ISessionManager sessionManager,
-            IUnitOfWork unitOfWork,
-            IMapper mapper)
-            : base(requestValidators, sessionManager)
+        public GetCurrentUserRequestHandler(ISessionManager sessionManager, IUnitOfWork unitOfWork, IMapper mapper)
+            : base(sessionManager)
         {
             _work = unitOfWork;
             _mapper = mapper;

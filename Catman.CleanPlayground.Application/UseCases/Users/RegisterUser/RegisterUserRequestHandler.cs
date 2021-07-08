@@ -1,15 +1,13 @@
 namespace Catman.CleanPlayground.Application.UseCases.Users.RegisterUser
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.Entities;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
-    using FluentValidation;
 
     internal class RegisterUserRequestHandler : RequestHandlerBase<RegisterUserRequest, BlankResource>
     {
@@ -18,12 +16,11 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.RegisterUser
         private readonly IMapper _mapper;
 
         public RegisterUserRequestHandler(
-            IEnumerable<IValidator<RegisterUserRequest>> requestValidators,
             ISessionManager sessionManager,
             IUnitOfWork unitOfWork,
             IPasswordHelper passwordHelper,
             IMapper mapper)
-            : base(requestValidators, sessionManager)
+            : base(sessionManager)
         {
             _passwordHelper = passwordHelper;
             _work = unitOfWork;

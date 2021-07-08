@@ -1,14 +1,12 @@
 namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
-    using FluentValidation;
 
     internal class UpdateUserRequestHandler : RequestHandlerBase<UpdateUserRequest, BlankResource>
     {
@@ -19,12 +17,11 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.UpdateUser
         protected override bool RequireAuthorizedUser => true;
 
         public UpdateUserRequestHandler(
-            IEnumerable<IValidator<UpdateUserRequest>> requestValidators,
             IPasswordHelper passwordHelper,
             ISessionManager sessionManager,
             IUnitOfWork unitOfWork,
             IMapper mapper)
-            : base(requestValidators, sessionManager)
+            : base(sessionManager)
         {
             _passwordHelper = passwordHelper;
             _mapper = mapper;

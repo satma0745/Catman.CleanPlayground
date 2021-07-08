@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
+namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandling
 {
     using System;
     using System.Collections.Generic;
@@ -8,24 +8,19 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
     using Catman.CleanPlayground.Application.UseCases.Common.Request;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
     using Catman.CleanPlayground.Application.UseCases.Common.Response.Errors;
-    using FluentValidation;
     using MediatR;
 
     internal abstract class RequestHandlerBase<TRequest, TResource> : IRequestHandler<TRequest, IResponse<TResource>>
         where TRequest : RequestBase<TResource>
     {
-        private readonly IEnumerable<IValidator<TRequest>> _requestValidators;
         private readonly ISessionManager _sessionManager;
         
         protected virtual bool RequireAuthorizedUser => false;
         
         protected ISession Session { get; private set; }
 
-        protected RequestHandlerBase(
-            IEnumerable<IValidator<TRequest>> requestValidators,
-            ISessionManager sessionManager)
+        protected RequestHandlerBase(ISessionManager sessionManager)
         {
-            _requestValidators = requestValidators;
             _sessionManager = sessionManager;
         }
 
@@ -33,13 +28,6 @@ namespace Catman.CleanPlayground.Application.UseCases.Common.RequestHandler
         {
             try
             {
-                var validationResult = await RequestValidator.ValidateRequestAsync(request, _requestValidators);
-                if (!validationResult.IsValid)
-                {
-                    var validationError = new ValidationError(validationResult);
-                    return new Response<TResource>(validationError);
-                }
-
                 var authorizationToken = request.AuthorizationToken;
                 var sessionGenerationResult = await _sessionManager.RestoreSessionAsync(authorizationToken);
                 if (!sessionGenerationResult.Success && RequireAuthorizedUser)

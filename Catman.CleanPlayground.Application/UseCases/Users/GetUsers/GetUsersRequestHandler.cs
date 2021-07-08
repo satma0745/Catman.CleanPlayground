@@ -5,21 +5,16 @@ namespace Catman.CleanPlayground.Application.UseCases.Users.GetUsers
     using AutoMapper;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
-    using FluentValidation;
 
     internal class GetUsersRequestHandler : RequestHandlerBase<GetUsersRequest, ICollection<UserResource>>
     {
         private readonly IUnitOfWork _work;
         private readonly IMapper _mapper;
 
-        public GetUsersRequestHandler(
-            IEnumerable<IValidator<GetUsersRequest>> requestValidators,
-            ISessionManager sessionManager,
-            IUnitOfWork unitOfWork,
-            IMapper mapper)
-            : base(requestValidators, sessionManager)
+        public GetUsersRequestHandler(ISessionManager sessionManager, IUnitOfWork unitOfWork, IMapper mapper)
+            : base(sessionManager)
         {
             _mapper = mapper;
             _work = unitOfWork;

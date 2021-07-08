@@ -1,13 +1,11 @@
 namespace Catman.CleanPlayground.Application.UseCases.Authentication.AuthenticateUser
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Catman.CleanPlayground.Application.Helpers.Password;
     using Catman.CleanPlayground.Application.Persistence.UnitOfWork;
     using Catman.CleanPlayground.Application.Session;
-    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandler;
+    using Catman.CleanPlayground.Application.UseCases.Common.RequestHandling;
     using Catman.CleanPlayground.Application.UseCases.Common.Response;
-    using FluentValidation;
 
     internal class AuthenticateUserRequestHandler : RequestHandlerBase<AuthenticateUserRequest, string>
     {
@@ -16,11 +14,10 @@ namespace Catman.CleanPlayground.Application.UseCases.Authentication.Authenticat
         private readonly IUnitOfWork _work;
 
         public AuthenticateUserRequestHandler(
-            IEnumerable<IValidator<AuthenticateUserRequest>> requestValidators,
             ISessionManager sessionManager,
             IUnitOfWork unitOfWork,
             IPasswordHelper passwordHelper)
-            : base(requestValidators, sessionManager)
+            : base(sessionManager)
         {
             _sessionManager = sessionManager;
             _passwordHelper = passwordHelper;
