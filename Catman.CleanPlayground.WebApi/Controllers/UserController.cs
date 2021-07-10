@@ -46,13 +46,13 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         _ => InternalServerError()
                     });
 
-        [HttpPost("{id:guid}/update")]
+        [HttpPost("{userId:guid}/update")]
         public async Task<IActionResult> UpdateUserAsync(
-            [FromRoute] Guid id,
+            [FromRoute] Guid userId,
             [FromHeader] string authorization,
             [FromBody] UpdateUserDto updateDto)
         {
-            var updateRequest = new UpdateUserRequest(id, authorization);
+            var updateRequest = new UpdateUserRequest(userId, authorization);
             _mapper.Map(updateDto, updateRequest);
             
             return await _mediator
