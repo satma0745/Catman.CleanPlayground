@@ -12,6 +12,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.DataTransferObjects.User;
     using Catman.CleanPlayground.WebApi.Extensions.UseCases;
     using MediatR;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("/api/users")]
@@ -47,6 +48,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     });
 
         [HttpPost("{userId:guid}/update")]
+        [Authorize]
         public async Task<IActionResult> UpdateUserAsync(
             [FromRoute] Guid userId,
             [FromHeader] string authorization,
@@ -70,6 +72,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet("{userId:guid}/delete")]
+        [Authorize]
         public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization) =>
             _mediator
                 .Send(new DeleteUserRequest(userId, authorization))

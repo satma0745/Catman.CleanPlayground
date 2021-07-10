@@ -1,5 +1,6 @@
 namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection
 {
+    using Catman.CleanPlayground.Application.Extensions.Configuration;
     using Catman.CleanPlayground.Application.Helpers.AuthorizationToken;
     using Catman.CleanPlayground.JwtAuthentication.Configuration;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.Configuration;

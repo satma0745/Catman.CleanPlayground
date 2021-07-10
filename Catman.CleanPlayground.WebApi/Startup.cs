@@ -30,6 +30,8 @@ namespace Catman.CleanPlayground.WebApi
             application
                 .UseSwagger(_configuration)
                 .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }

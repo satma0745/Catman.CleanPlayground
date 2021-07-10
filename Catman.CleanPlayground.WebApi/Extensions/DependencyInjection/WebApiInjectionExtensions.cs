@@ -7,6 +7,7 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
     {
         public static void AddWebApi(this IServiceCollection services, IConfiguration configuration) =>
             services
+                .AddAuthentication(configuration)
                 .AddSwagger(configuration)
                 .AddControllers()
                 .AddValidation();

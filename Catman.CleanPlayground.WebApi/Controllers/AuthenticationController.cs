@@ -8,6 +8,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication;
     using Catman.CleanPlayground.WebApi.Extensions.UseCases;
     using MediatR;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("/api/auth")]
@@ -23,6 +24,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet("who-am-i")]
+        [Authorize]
         public Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization) =>
             _mediator
                 .Send(new GetCurrentUserRequest(authorization))
