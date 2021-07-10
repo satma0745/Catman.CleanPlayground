@@ -46,13 +46,13 @@ namespace Catman.CleanPlayground.PostgreSqlPersistence.Repositories
         public Task CreateUserAsync(UserEntity user)
         {
             _context.Users.Add(user);
-            return _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public Task RemoveUserAsync(UserEntity user)
         {
             _context.Users.Remove(user);
-            return _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }
