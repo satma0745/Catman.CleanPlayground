@@ -49,12 +49,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpPost("{userId:guid}/update")]
         [Authorize]
-        public async Task<IActionResult> UpdateUserAsync(
-            [FromRoute] Guid userId,
-            [FromHeader] string authorization,
-            [FromBody] UpdateUserDto updateDto)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateDto)
         {
-            var updateRequest = new UpdateUserRequest(userId, authorization);
+            var updateRequest = new UpdateUserRequest(userId, AuthorizationToken);
             _mapper.Map(updateDto, updateRequest);
             
             return await _mediator
@@ -73,9 +70,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpGet("{userId:guid}/delete")]
         [Authorize]
-        public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId, [FromHeader] string authorization) =>
+        public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId) =>
             _mediator
-                .Send(new DeleteUserRequest(userId, authorization))
+                .Send(new DeleteUserRequest(userId, AuthorizationToken))
                 .SelectActionResultAsync(
                     () => Ok(),
                     error => error switch

@@ -5,6 +5,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     [ApiController]
     public class ApiControllerBase : ControllerBase
     {
+        protected string AuthorizationToken =>
+            Request.Headers["Authorization"];
+        
         protected IActionResult Forbidden() =>
             StatusCode(403);
         

@@ -25,9 +25,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpGet("who-am-i")]
         [Authorize]
-        public Task<IActionResult> GetCurrentUserAsync([FromHeader] string authorization) =>
+        public Task<IActionResult> GetCurrentUserAsync() =>
             _mediator
-                .Send(new GetCurrentUserRequest(authorization))
+                .Send(new GetCurrentUserRequest(AuthorizationToken))
                 .SelectActionResultAsync(
                     user => Ok(_mapper.Map<CurrentUserDto>(user)),
                     error => error switch
