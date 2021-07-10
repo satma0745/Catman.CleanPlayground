@@ -1,6 +1,7 @@
 namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Extensions.Configuration;
+    using Catman.CleanPlayground.WebApi.Filters;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,16 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
                     Title = title,
                     Version = version
                 });
+                
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Provide authorization token:",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                options.OperationFilter<SwaggerAuthorizationIndicatorFilter>();
             });
 
         public static IApplicationBuilder UseSwagger(
