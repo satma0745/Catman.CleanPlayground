@@ -12,5 +12,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Configuration
         public IJwtAlgorithm Algorithm { get; init; }
         
         public ICollection<string> TokenPrefixes { get; init; }
+        
+        public byte TokenVersion { get; init; }
     }
 }

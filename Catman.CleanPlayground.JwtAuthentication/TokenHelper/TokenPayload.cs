@@ -5,5 +5,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
     internal class TokenPayload
     {
         public Guid UserId { get; init; }
+        
+        public byte Version { get; init; }
     }
 }

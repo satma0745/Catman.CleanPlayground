@@ -36,6 +36,12 @@ namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
                 
                 var token = authorizationToken.NormalizeToken(_configuration.TokenPrefixes);
                 var tokenPayload = _jwtBuilder.GetPayload(token);
+
+                if (tokenPayload.Version != _configuration.TokenVersion)
+                {
+                    return new TokenAuthenticationResult("Token version mismatch.");
+                }
+                
                 if (!await _work.Users.UserExistsAsync(tokenPayload.UserId))
                 {
                     return new TokenAuthenticationResult("Authorization token owner does not exist.");

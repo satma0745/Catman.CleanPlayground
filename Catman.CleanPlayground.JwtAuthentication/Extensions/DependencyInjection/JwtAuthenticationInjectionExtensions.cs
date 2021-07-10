@@ -26,6 +26,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjectio
                     TokenLifetimeInDays = configuration.GetAuthTokenLifetime(),
                     Algorithm = new HMACSHA512Algorithm(),
                     TokenPrefixes = new[] {"Bearer"},
+                    TokenVersion = 1
                 };
             });
 

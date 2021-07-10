@@ -13,6 +13,10 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.Token
 
         public static JwtBuilder AddUserId(this JwtBuilder tokenBuilder, Guid userId) =>
             tokenBuilder.AddClaim("sub", userId);
+            
+
+        public static JwtBuilder AddVersion(this JwtBuilder tokenBuilder, byte version) =>
+            tokenBuilder.AddClaim("ver", version);
 
         public static TokenPayload GetPayload(this JwtBuilder tokenBuilder, string token)
         {
@@ -20,7 +24,8 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.Token
 
             return new TokenPayload
             {
-                UserId = Guid.Parse((string) claims["sub"])
+                UserId = Guid.Parse((string) claims["sub"]),
+                Version = (byte) (long) claims["ver"]
             };
         }
 

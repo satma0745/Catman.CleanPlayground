@@ -16,7 +16,8 @@ namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
             
             _jwtBuilder = JwtBuilder.Create()
                 .WithAlgorithm(_configuration.Algorithm)
-                .WithSecret(_configuration.SecretKey);
+                .WithSecret(_configuration.SecretKey)
+                .AddVersion(_configuration.TokenVersion);
         }
 
         public string GenerateToken(Guid userId) =>
