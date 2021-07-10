@@ -10,12 +10,14 @@ namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
 
     internal class TokenAuthenticator
     {
-        private readonly JwtBuilder _jwtBuilder;
         private readonly IUnitOfWork _work;
+        private readonly JwtAuthenticationConfiguration _configuration;
+        private readonly JwtBuilder _jwtBuilder;
 
         public TokenAuthenticator(JwtAuthenticationConfiguration configuration, IUnitOfWork work)
         {
             _work = work;
+            _configuration = configuration;
             
             _jwtBuilder = JwtBuilder.Create()
                 .WithAlgorithm(configuration.Algorithm)
@@ -32,7 +34,8 @@ namespace Catman.CleanPlayground.JwtAuthentication.TokenHelper
                     return new TokenAuthenticationResult("No authentication token provided.");
                 }
                 
-                var tokenPayload = _jwtBuilder.GetPayload(authorizationToken);
+                var token = authorizationToken.NormalizeToken(_configuration.TokenPrefixes);
+                var tokenPayload = _jwtBuilder.GetPayload(token);
                 if (!await _work.Users.UserExistsAsync(tokenPayload.UserId))
                 {
                     return new TokenAuthenticationResult("Authorization token owner does not exist.");

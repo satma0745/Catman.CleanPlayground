@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.Token
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Catman.CleanPlayground.JwtAuthentication.TokenHelper;
     using JWT.Builder;
 
@@ -22,5 +23,11 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.Token
                 UserId = Guid.Parse((string) claims["sub"])
             };
         }
+
+        public static string NormalizeToken(this string authorizationToken, IEnumerable<string> supportedPrefixes) =>
+            supportedPrefixes.Aggregate(authorizationToken, (token, prefix) =>
+                token.StartsWith(prefix)
+                    ? token.Replace(prefix, string.Empty).TrimStart()
+                    : token);
     }
 }

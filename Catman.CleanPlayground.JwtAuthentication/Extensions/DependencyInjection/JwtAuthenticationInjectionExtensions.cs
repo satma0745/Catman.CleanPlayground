@@ -24,7 +24,8 @@ namespace Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjectio
                 {
                     SecretKey = configuration.GetAuthSecret(),
                     TokenLifetimeInDays = configuration.GetAuthTokenLifetime(),
-                    Algorithm = new HMACSHA512Algorithm()
+                    Algorithm = new HMACSHA512Algorithm(),
+                    TokenPrefixes = new[] {"Bearer"},
                 };
             });
 
