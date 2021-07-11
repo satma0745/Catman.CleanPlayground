@@ -47,6 +47,8 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
                         name: $"{title} {version}");
 
                     options.RoutePrefix = string.Empty;
+                    
+                    options.InjectStylesheet("/swagger.css");
                 });
     }
 }

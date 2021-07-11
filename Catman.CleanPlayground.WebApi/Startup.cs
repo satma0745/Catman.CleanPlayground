@@ -28,6 +28,7 @@ namespace Catman.CleanPlayground.WebApi
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>
             application
+                .UseStaticFiles()
                 .UseSwagger(_configuration)
                 .UseRouting()
                 .UseAuthentication()
