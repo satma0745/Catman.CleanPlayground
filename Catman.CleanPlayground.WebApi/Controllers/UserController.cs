@@ -13,6 +13,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.Extensions.UseCases;
     using MediatR;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("/api/users")]
@@ -28,6 +29,8 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ICollection<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Task<IActionResult> GetUsersAsync() =>
             _mediator
                 .Send(new GetUsersRequest())
@@ -36,6 +39,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     _ => InternalServerError());
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Task<IActionResult> RegisterUserAsync([FromBody] RegisterUserDto registerDto) =>
             _mediator
                 .Send(_mapper.Map<RegisterUserRequest>(registerDto))
@@ -49,6 +55,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpPost("{userId:guid}/update")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateDto)
         {
             var updateRequest = new UpdateUserRequest(userId, AuthorizationToken);
@@ -70,6 +82,12 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpGet("{userId:guid}/delete")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Task<IActionResult> DeleteUserAsync([FromRoute] Guid userId) =>
             _mediator
                 .Send(new DeleteUserRequest(userId, AuthorizationToken))
@@ -78,9 +96,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     error => error switch
                     {
                         ValidationError validationError => BadRequest(validationError.ValidationErrors),
-                        NotFoundError => NotFound(),
                         AuthenticationError => Unauthorized(),
                         AccessViolationError => Forbidden(),
+                        NotFoundError => NotFound(),
                         _ => InternalServerError()
                     });
     }

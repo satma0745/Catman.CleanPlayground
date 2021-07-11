@@ -9,6 +9,7 @@ namespace Catman.CleanPlayground.WebApi.Controllers
     using Catman.CleanPlayground.WebApi.Extensions.UseCases;
     using MediatR;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("/api/auth")]
@@ -25,6 +26,9 @@ namespace Catman.CleanPlayground.WebApi.Controllers
 
         [HttpGet("who-am-i")]
         [Authorize]
+        [ProducesResponseType(typeof(CurrentUserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Task<IActionResult> GetCurrentUserAsync() =>
             _mediator
                 .Send(new GetCurrentUserRequest(AuthorizationToken))
@@ -37,6 +41,10 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                     });
 
         [HttpPost("token")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Task<IActionResult> AuthenticateUserAsync([FromBody] UserCredentialsDto credentialsDto) =>
             _mediator
                 .Send(_mapper.Map<AuthenticateUserRequest>(credentialsDto))
