@@ -61,13 +61,13 @@ namespace Catman.CleanPlayground.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateDto)
-        {
-            var updateRequest = new UpdateUserRequest(userId, AuthorizationToken);
-            _mapper.Map(updateDto, updateRequest);
-            
-            return await _mediator
-                .Send(updateRequest)
+        public Task<IActionResult> UpdateUserAsync([FromRoute] Guid userId, [FromBody] UpdateUserDto updateDto) =>
+            _mediator
+                .Send(() =>
+                {
+                    var updateRequest = new UpdateUserRequest(userId, AuthorizationToken);
+                    return _mapper.Map(updateDto, updateRequest);
+                })
                 .SelectActionResultAsync(
                     () => Ok(),
                     error => error switch
@@ -78,7 +78,6 @@ namespace Catman.CleanPlayground.WebApi.Controllers
                         NotFoundError => NotFound(),
                         _ => InternalServerError()
                     });
-        }
 
         [HttpGet("{userId:guid}/delete")]
         [Authorize]
