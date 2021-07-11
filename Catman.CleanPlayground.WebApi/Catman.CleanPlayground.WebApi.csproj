@@ -19,6 +19,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Catman.CleanPlayground.Application\Catman.CleanPlayground.Application.csproj" />
       <ProjectReference Include="..\Catman.CleanPlayground.JwtAuthentication\Catman.CleanPlayground.JwtAuthentication.csproj" />
+      <ProjectReference Include="..\Catman.CleanPlayground.Localization\Catman.CleanPlayground.Localization.csproj" />
       <ProjectReference Include="..\Catman.CleanPlayground.PostgreSqlPersistence\Catman.CleanPlayground.PostgreSqlPersistence.csproj" />
     </ItemGroup>
 

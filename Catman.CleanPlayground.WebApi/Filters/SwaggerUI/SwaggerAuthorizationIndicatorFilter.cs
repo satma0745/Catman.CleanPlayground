@@ -1,4 +1,4 @@
-namespace Catman.CleanPlayground.WebApi.Filters
+namespace Catman.CleanPlayground.WebApi.Filters.SwaggerUI
 {
     using System;
     using System.Linq;

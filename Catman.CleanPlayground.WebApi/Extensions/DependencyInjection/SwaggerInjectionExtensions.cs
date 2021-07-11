@@ -1,7 +1,7 @@
 namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Extensions.Configuration;
-    using Catman.CleanPlayground.WebApi.Filters;
+    using Catman.CleanPlayground.WebApi.Filters.SwaggerUI;
     using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
@@ -18,6 +18,7 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
                 {
                     options.AddOpenApiInfo(configuration);
                     options.AddSecurity();
+                    options.AddSwaggerFilters();
                 })
                 .AddFluentValidationRulesToSwagger();
 
@@ -54,8 +55,12 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
                 BearerFormat = "JWT",
                 Scheme = "bearer"
             });
+        }
 
+        private static void AddSwaggerFilters(this SwaggerGenOptions options)
+        {
             options.OperationFilter<SwaggerAuthorizationIndicatorFilter>();
+            options.OperationFilter<SwaggerLocalizationHeaderFilter>();
         }
 
         private static void AddSwaggerEndpoint(this SwaggerUIOptions options, IConfiguration configuration)

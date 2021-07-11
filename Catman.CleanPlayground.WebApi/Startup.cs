@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.WebApi
 {
     using Catman.CleanPlayground.Application.Extensions.DependencyInjection;
     using Catman.CleanPlayground.JwtAuthentication.Extensions.DependencyInjection;
+    using Catman.CleanPlayground.Localization.Extensions.DependencyInjection;
     using Catman.CleanPlayground.PostgreSqlPersistence.Extensions.DependencyInjection;
     using Catman.CleanPlayground.WebApi.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Builder;
@@ -24,6 +25,7 @@ namespace Catman.CleanPlayground.WebApi
                 .AddPostgreSqlPersistence(_configuration)
                 .AddMappings()
                 .AddJwtAuthentication()
+                .AddResourceLocalization()
                 .AddWebApi(_configuration);
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>
@@ -33,6 +35,7 @@ namespace Catman.CleanPlayground.WebApi
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
+                .UseLocalization()
                 .UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }
