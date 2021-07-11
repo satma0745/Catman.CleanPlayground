@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Extensions.Configuration;
     using Catman.CleanPlayground.WebApi.Filters;
+    using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -12,11 +13,13 @@ namespace Catman.CleanPlayground.WebApi.Extensions.DependencyInjection
     internal static class SwaggerInjectionExtensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration) =>
-            services.AddSwaggerGen(options =>
-            {
-                options.AddOpenApiInfo(configuration);
-                options.AddSecurity();
-            });
+            services
+                .AddSwaggerGen(options =>
+                {
+                    options.AddOpenApiInfo(configuration);
+                    options.AddSecurity();
+                })
+                .AddFluentValidationRulesToSwagger();
 
         public static IApplicationBuilder UseSwagger(
             this IApplicationBuilder application,
