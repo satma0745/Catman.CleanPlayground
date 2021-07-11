@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
 {
     using System.Text.Json.Serialization;
     using Catman.CleanPlayground.Application.Extensions.Validation;
+    using Catman.CleanPlayground.Application.Localization;
     using FluentValidation;
 
     public class UpdateUserDto
@@ -18,11 +19,11 @@ namespace Catman.CleanPlayground.WebApi.DataTransferObjects.User
 
     internal class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
     {
-        public UpdateUserDtoValidator()
+        public UpdateUserDtoValidator(IValidationLocalizer localizer)
         {
-            RuleFor(dto => dto.Username).ValidUsername();
-            RuleFor(dto => dto.Password).ValidPassword();
-            RuleFor(dto => dto.DisplayName).ValidDisplayName();
+            RuleFor(dto => dto.Username).ValidUsername(localizer);
+            RuleFor(dto => dto.Password).ValidPassword(localizer);
+            RuleFor(dto => dto.DisplayName).ValidDisplayName(localizer);
         }
     }
 }

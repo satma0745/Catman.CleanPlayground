@@ -1,6 +1,8 @@
 namespace Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication
 {
     using System.Text.Json.Serialization;
+    using Catman.CleanPlayground.Application.Extensions.Validation;
+    using Catman.CleanPlayground.Application.Localization;
     using FluentValidation;
 
     public class UserCredentialsDto
@@ -14,10 +16,10 @@ namespace Catman.CleanPlayground.WebApi.DataTransferObjects.Authentication
 
     internal class UserCredentialsDtoValidator : AbstractValidator<UserCredentialsDto>
     {
-        public UserCredentialsDtoValidator()
+        public UserCredentialsDtoValidator(IValidationLocalizer localizer)
         {
-            RuleFor(dto => dto.Username).NotEmpty();
-            RuleFor(dto => dto.Password).NotEmpty();
+            RuleFor(dto => dto.Username).Required(localizer);
+            RuleFor(dto => dto.Password).Required(localizer);
         }
     }
 }

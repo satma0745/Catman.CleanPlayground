@@ -2,6 +2,7 @@ namespace Catman.CleanPlayground.Localization.Extensions.DependencyInjection
 {
     using Catman.CleanPlayground.Application.Localization;
     using Catman.CleanPlayground.Localization.Localizers.User;
+    using Catman.CleanPlayground.Localization.Localizers.Validation;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class LocalizationInjectionExtensions
@@ -12,6 +13,8 @@ namespace Catman.CleanPlayground.Localization.Extensions.DependencyInjection
                 .AddLocalizers();
 
         private static IServiceCollection AddLocalizers(this IServiceCollection services) =>
-            services.AddScoped<IUserLocalizer, UserLocalizer>();
+            services
+                .AddScoped<IValidationLocalizer, ValidationLocalizer>()
+                .AddScoped<IUserLocalizer, UserLocalizer>();
     }
 }
